@@ -90,6 +90,11 @@ inputs:
                     Analysis, and causes the -cache option to be discarded if it is provided.'
     required: false
     default: 'false'
+  reportfile:
+    description:    'Path to a file in which the report output will be sent. By default the report is printed on 
+                    standard output.'
+    required: false
+    default: 'false'
   shortnames:
     description:    'Prints shortened filenames in the report.'
     required: false
@@ -226,6 +231,13 @@ runs:
       run: |
         if [[ "${ no-cache }" == 'true' ]]; then
           echo -n "-no-cache  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for reportfile parameter
+      run: |
+        if [[ "${ reportfile }" != 'false' ]]; then
+          echo -n "-reportfile ${ reportfile }  >> pmd-scan.sh"
         fi
       shell: bash
 
