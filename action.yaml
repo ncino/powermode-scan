@@ -12,107 +12,124 @@ inputs:
   rulesets:
     description:    'Comma-separated list of ruleset or rule references.'
     required: true
-  scan-root-directory:
+  dir:
     description:    'Required Root directory for the analyzed sources.'
     required: true
   differential-scan:
-    description:    'Run the scan on all files or only files changed in the pull request?'
+    description:    'Run the scan on all files or only files changed in the pull request?  If set to true this will 
+                    ignore the scan-root-directory setting and use a generated diff file instead.'
     required: true
-  report-format:
+  format:
     description:    'Output format of the analysis report. Options: sarif, codeclimate, csv, emacs, html, ideaj,
                     json, summaryhtml, text (default), textcolor, textpad, vbhtml, xml, xslt, yahtml'
     required: false
-  aux-class-path:
-    description:    'Specifies the classpath for libraries used by the source code. This is used to resolve types
-                    in source files. The platform specific path delimiter (":" on Linux, ";" on Windows) is used 
-                    to separate the entries. Alternatively, a single file: URL to a text file containing path 
-                    elements on consecutive lines can be specified.'
+    default: 'text'
+  auxclasspath: 
+    description:    'Specifies the classpath for libraries used by the source code. This is used to resolve types in 
+                    source files. The platform specific path delimiter (":" on Linux, ";" on Windows) is used to 
+                    separate the entries. Alternatively, a single file: URL to a text file containing path elements on 
+                    consecutive lines can be specified.'
     required: false
-  benchmark-mode:
+    default: 'false'
+  benchmark:
     description:    'Enables benchmark mode, which outputs a benchmark report upon completion. 
                     The report is sent to standard error.'
     required: false
-  scan-cache-path: 
+    default: 'false'
+  cache: 
     description:    'Specify the location of the cache file for incremental analysis. This should be the full path to 
                     the file, including the desired file name (not just the parent directory). If the file does not 
                     exist, it will be created on the first run. The file will be overwritten on each run with the most 
                     up-to-date rule violations. This can greatly improve analysis performance and is highly recommended.'
     required: false
-  debug-mode:
+    default: 'false'
+  debug:
     description:    'Debug mode. Prints more log output.'
     required: false
-  enconding-charset:
+  encoding:
     description:    'Specifies the character set encoding of the source code files PMD is reading. The valid values are 
                     the standard character sets of java.nio.charset.Charset.'
     required: false
-  fail-on-violation:
+    default: 'false'
+  failOnViolation:
     description:    'Specifies whether PMD exits with non-zero status if violations are found. By default PMD exits 
                     with status 4 if violations are found. Disable this feature with -failOnViolation false to exit 
                     with 0 instead and just output the report.	'
     required: false
-  file-list-path:
+    default: 'true'
+  filelist:
     description:    'Path to file containing a comma delimited list of files to analyze. If this is given, then you 
                     do not need to provide -dir.'
     required: false
-  ignore-list-path: 
+    default: 'false'
+  ignorelist: 
     description:    'Path to file containing a comma delimited list of files to ignore. This option can be combined 
                     with -dir and -filelist. This ignore list takes precedence over any files in the filelist.'
     required: false
+    default: 'false'
   help:
     description:    'Display help on usage.'
     required: false
-  minimum-priority-threshold:
+    default: 'false'
+  language:
+    description:    'Specify the language PMD should use. Used together with -version.'
+    required: false
+    default: 'false'
+  minimumpriority:
     description:    'Rule priority threshold, rules with lower priority than configured here will not be used.' 
     required: false
-  no-rule-set-compatibility:
+    default: '5'
+  norulesetcompatibility:
     description:    'Disable automatic fixing of invalid rule references. Without the switch, PMD tries to 
                     automatically replace rule references that point to moved or renamed rules with the newer 
                     location if possible. Disabling it is not recommended.'
     required: false
+    default: 'false'
   no-cache:
     description:    'Explicitly disables incremental analysis. This switch turns off suggestions to use Incremental 
                     Analysis, and causes the -cache option to be discarded if it is provided.'
     required: false
-  short-names:
+    default: 'false'
+  shortnames:
     description:    'Prints shortened filenames in the report.'
     required: false
-  show-suppressed-messages:
+    default: 'false'
+  showsuppressed:
     description:    'Causes the suppressed rule violations to be added to the report.'
     required: false
-  stress-test:
+    default: 'false'
+  stress:
     description:    'Performs a stress test.'
     required: false
+    default: 'false'
+  suppressmarker:
+    description:    'Specifies the comment token that marks lines which PMD should ignore.'
+    required: false
+    default: 'NOPMD'
   threads:
     description:    'Sets the number of threads used by PMD. Set threads to 0 to disable multi-threading processing.'
     required: false
-
-# outputs:
-#   exit-code:
-#     description:    0	Everything is fine, no violations found
-#                     1	Could not understand command-line parameters or PMD exited with an exception
-#                     4	At least one violation has been detected, unless -failOnViolation false is set.
+    default: '1'
+  uri:
+    description:    'Database URI for sources. If this is given, then you do not need to provide -dir'
+    required: false
+    default: 'false'
+  version: 
+    description:    'Specify the version of a language PMD should use. Used together with -language.'
+    required: false
+    default: 'false'
 
 runs:
   using: "composite"
   steps:
-    # Install PMD
-    # Download specified version with wget
-    # 
-    - run: |
-        wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${pmd-version}"/pmd-bin-"${pmd-version}".zip
-        unzip pmd-bin-"${pmd-version}".zip
+
+    - id: Download and Unzip PMD
+      run: |
+        wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${ pmd-version }"/pmd-bin-"${ pmd-version }".zip
+        unzip pmd-bin-"${ pmd-version }".zip
       shell: bash
-    # Setup PMD
 
-    # Run PMD Scan
-
-    # Process Results
-
-    # Post a comment
-
-    # Cleanup
-
-    - id: branches
+    - id: Identify Branch Target and Source for Differential Scans
       run: |
         if [ ${{ github.event_name }} == 'pull_request' ]; then
             echo "::set-output name=target::${{ github.base_ref }}"
@@ -122,50 +139,135 @@ runs:
             echo "::set-output name=source::${{ github.ref }}"
         fi
       shell: bash
-    - run: ${{ github.action_path }}/pmd-analyser.sh
-      shell: bash
-      env:
-        PMD_VERSION: ${{ inputs.pmd-version }}
-        FILE_PATH: ${{ inputs.file-path }}
-        RULES_PATH: ${{ inputs.rules-path }}
-        ANALYSE_ALL_CODE: ${{ inputs.analyse-all-code }}
-        TARGET_BRANCH: ${{ steps.branches.outputs.target }}
-        SOURCE_BRANCH: ${{ steps.branches.outputs.source }}
-        ERROR_RULES: ${{ inputs.error-rules }}
 
-ERROR_COUNT=0
-
-# Download PMD
-wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${PMD_VERSION}"/pmd-bin-"${PMD_VERSION}".zip
-unzip pmd-bin-"${PMD_VERSION}".zip
-# Now either run the full analysis or files changed based on the settings defined
-if [ "$ANALYSE_ALL_CODE" == 'true' ]; then
-    pmd-bin-"${PMD_VERSION}"/bin/run.sh pmd -d "$FILE_PATH" -R "$RULES_PATH" -failOnViolation false -f json > pmd-output.json
-else
-    # Generate a CSV file first with the files changed
-    git diff --name-only --diff-filter=d origin/"$TARGET_BRANCH"..origin/"${SOURCE_BRANCH#"refs/heads/"}" | paste -s -d "," >> diff-file.csv
-    # Run the analysis
-    pmd-bin-"${PMD_VERSION}"/bin/run.sh pmd -filelist diff-file.csv -R "$RULES_PATH" -failOnViolation false -f json > pmd-output.json
-fi
-# Loop through each file and then loop through each violation identified
- while read -r file; do
-    FILENAME="$(echo "$file" | jq --raw-output '.filename | ltrimstr("${{ github.workspace }}/")')"
-    while read -r violation; do
-        MESSAGE="$(echo "$violation" | jq --raw-output '" \(.ruleset) - \(.rule): \(.description). This applies from line \(.beginline) to \(.endline) and from column \(.begincolumn) to \(.endcolumn). For more information on this rule visit \(.externalInfoUrl)"')"
-        LINE="$(echo "$violation" | jq --raw-output '.beginline')"
-        COLUMN="$(echo "$violation" | jq --raw-output '.begincolumn')"
-        RULE="$(echo "$violation" | jq --raw-output '.rule')"
-        if [ -n "$RULE" ]; then
-            if [[ "$ERROR_RULES" == *"$RULE"* ]]; then
-                echo ::error file="$FILENAME",line="$LINE",col="$COLUMN"::"$MESSAGE"
-                ERROR_COUNT=$((ERROR_COUNT + 1))
-            else
-                echo ::warning file="$FILENAME",line="$LINE",col="$COLUMN"::"$MESSAGE"
-            fi
+    - id: Generate List of Files to Scan for a Differential Scan
+      run: |
+        if [ "${ differential-scan }" == 'true' ]; then
+          git diff --name-only --diff-filter=d origin/"$TARGET_BRANCH"..origin/"${SOURCE_BRANCH#"refs/heads/"}" | paste -s -d "," >> diff-file.csv
         fi
-    done <<< "$(echo "$file" | jq --compact-output '.violations[]')"
-done <<< "$(cat pmd-output.json | jq --compact-output '.files[]')"
-# If there are any errors logged we want this to fail (warnings don't count)
-if [ "$ERROR_COUNT" -gt 0 ]; then
-    exit 3
-fi
+      shell: bash
+
+    # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
+    # conditional tests.  If the conditional passes the argument is added to the scan script file.
+    - id: Initialize Core Scan Components
+      run: |
+        echo -n "pmd-bin"${ pmd-version }"/bin/run.sh pmd \
+            -dir ${ dir } \
+            -rulesets ${ rulesets } \
+            -format ${ format } \
+            -encoding ${ encoding } \
+            -failOnViolation ${ failOnViolation } \
+            -ignorelist ${ ignorelist } \
+            -minimumpriority ${ minimumpriority } \
+            -suppressmarker ${ suppressmarker }
+            -threads ${ threads } " > pmd-scan.sh
+      shell: bash
+
+###########################################################################
+### Start adding additional scan arguments based on input from actions. ###
+###########################################################################
+    - id: Check for differential-scan
+      run: |
+        if [[ "${ differential-scan }" == 'true' ]]; then
+          echo -n "-filelist ${ filelist } >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for benchmark flag
+      run: |
+        if [[ "${ benchmark }" == 'true' ]]; then
+          echo -n "-benchmark  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for cache flag
+      run: |
+        if [[ "${ use-cache }" != 'false' ]]; then
+          echo -n "-cache ${ cache }  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for debug flag
+      run: |
+        if [[ "${ debug  }" == 'true' ]]; then
+          echo -n "-debug  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for ignorelist
+      run: |
+        if [[ "${ ignorelist }" != 'false' ]]; then
+          echo -n "-ignorelist ${ ignorelist }  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for help flag
+      run: |
+        if [[ "${ help }" == 'true' ]]; then
+          echo -n "-help  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for language parameter
+      run: |
+        if [[ "${ language }" != 'false' ]]; then
+          echo -n "-language ${ language }  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for norulesetcompatibility flag
+      run: |
+        if [[ "${ norulesetcompatibility }" == 'true' ]]; then
+          echo -n "-norulesetcompatibility  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for no-cache flag
+      run: |
+        if [[ "${ no-cache }" == 'true' ]]; then
+          echo -n "-no-cache  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for shortnames flag
+      run: |
+        if [[ "${ shortnames }" == 'true' ]]; then
+          echo -n "-shortnames  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for showsuppressed flag
+      run: |
+        if [[ "${ showsuppressed }" == 'true' ]]; then
+          echo -n "-showsuppressed  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for stress flag
+      run: |
+        if [[ "${ stress }" == 'true' ]]; then
+          echo -n "-stress  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for uri parameter
+      run: |
+        if [[ "${ uri }" != 'false' ]]; then
+          echo -n "-uri ${ uri }  >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: Check for version parameter
+      run: |
+        if [[ "${ version }" != 'false' ]]; then
+          echo -n "-version ${ version }  >> pmd-scan.sh"
+        fi
+      shell: bash
+###########################################
+### Finish adding additional arguments. ###
+###########################################
+
+    # Run PMD Scan
+    - id: Run PMD Scan
+      run: pmd-scan.sh
+      shell: bash
