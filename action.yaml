@@ -148,6 +148,8 @@ runs:
             echo "::set-output name=target::${{ github.event.repository.default_branch }}"
             echo "::set-output name=source::${{ github.ref }}"
         fi
+        echo "Target: ${{ steps.branches.outputs.target }}"
+        echo "Source: ${{ steps.branches.outputs.source }}"
         echo "### End Setting Branch Target and Source ###"
       shell: bash
       
@@ -156,8 +158,10 @@ runs:
       run: |
         echo "### Start Generating Differential Filelist ###"
         if [ "${{ inputs.differential-scan }}" == 'true' ]; then
-          git diff --name-only --diff-filter=d origin/"${{ steps.branches.outputs.target }}"..origin/"${{ steps.branches.outputs.target}}#"refs/heads/"" | paste -s -d "," >> diff-file.csv
+          git diff --name-only --diff-filter=d origin/"${{ steps.branches.outputs.target }}"..origin/"${{ steps.branches.outputs.source}}#"refs/heads/"" | paste -s -d "," >> diff-file.csv
         fi
+        echo "Printing diff-file.csv"
+        cat diff-file.csv
         echo "### End Generating Differential Filelist ###"
       shell: bash
 
