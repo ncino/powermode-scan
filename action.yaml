@@ -131,8 +131,8 @@ runs:
     # Download and Unzip PMD
     - id: install-pmd
       run: |
-        wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${ pmd-version }"/pmd-bin-"${ pmd-version }".zip
-        unzip pmd-bin-"${ pmd-version }".zip
+        wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${{ inputs.pmd-version }}"/pmd-bin-"${{ inputs.pmd-version }}".zip
+        unzip pmd-bin-"${{ inputs.pmd-version }}".zip
       shell: bash
 
     # Identify Branch Target and Source for Differential Scans
@@ -284,5 +284,7 @@ runs:
 
     # Run PMD Scan
     - id: run-pmd-scan
-      run: pmd-scan.sh
+      run: |
+        chmod +x pmd-scan.sh
+        pmd-scan.sh
       shell: bash
