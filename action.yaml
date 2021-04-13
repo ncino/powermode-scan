@@ -162,7 +162,7 @@ runs:
       run: |
         echo "### Start Generating Differential Filelist ###"
         if [ "${{ inputs.differential-scan }}" == 'true' ]; then
-          git diff --name-only --diff-filter=d origin/"${{ steps.set-branch-target-and-source.outputs.target }}"..origin/"${{ steps.set-branch-target-and-source.outputs.source}}#"refs/heads/"" | paste -s -d "," >> diff-file.csv
+          git diff --name-only --diff-filter=d origin/"${{ steps.set-branch-target-and-source.outputs.target }}"..origin/"${{ steps.set-branch-target-and-source.outputs.source#"refs/heads/" }}" | paste -s -d "," >> diff-file.csv
         fi
         echo "Printing diff-file.csv"
         cat diff-file.csv
