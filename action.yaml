@@ -149,7 +149,7 @@ runs:
     # Generate List of Files to Scan for a Differential Scan
     - id: generate-differential-filelist
       run: |
-        if [ "${ differential-scan }" == 'true' ]; then
+        if [ "${{ inputs.differential-scan }}" == 'true' ]; then
           git diff --name-only --diff-filter=d origin/"$TARGET_BRANCH"..origin/"${SOURCE_BRANCH#"refs/heads/"}" | paste -s -d "," >> diff-file.csv
         fi
       shell: bash
@@ -159,16 +159,16 @@ runs:
     # Initialize Core Scan Components
     - id: initialize-scan
       run: |
-        echo -n "pmd-bin"${ pmd-version }"/bin/run.sh pmd \
-            -dir ${ dir } \
-            -rulesets ${ rulesets } \
-            -format ${ format } \
-            -encoding ${ encoding } \
-            -failOnViolation ${ failOnViolation } \
-            -ignorelist ${ ignorelist } \
-            -minimumpriority ${ minimumpriority } \
-            -suppressmarker ${ suppressmarker }
-            -threads ${ threads } " > pmd-scan.sh
+        echo -n "pmd-bin"${{ inputs.pmd-version }}"/bin/run.sh pmd \
+            -dir ${{ inputs.dir }} \
+            -rulesets ${{ inputs.rulesets }} \
+            -format ${{ inputs.format }} \
+            -encoding ${{ inputs.encoding }} \
+            -failOnViolation ${{ inputs.failOnViolation }} \
+            -ignorelist ${{ inputs.ignorelist }} \
+            -minimumpriority ${{ inputs.minimumpriority }} \
+            -suppressmarker ${{ inputs.suppressmarker }}
+            -threads ${{ inputs.threads }} " > pmd-scan.sh
       shell: bash
 
 ###########################################################################
@@ -176,106 +176,106 @@ runs:
 ###########################################################################
     - id: check-differential-scan
       run: |
-        if [[ "${ differential-scan }" == 'true' ]]; then
-          echo -n "-filelist ${ filelist } >> pmd-scan.sh"
+        if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then
+          echo -n "-filelist ${{ inputs.filelist }} >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-benchmark
       run: |
-        if [[ "${ benchmark }" == 'true' ]]; then
+        if [[ "${{ inputs.benchmark }}" == 'true' ]]; then
           echo -n "-benchmark  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-cache
       run: |
-        if [[ "${ use-cache }" != 'false' ]]; then
-          echo -n "-cache ${ cache }  >> pmd-scan.sh"
+        if [[ "${{ inputs.use-cache }}" != 'false' ]]; then
+          echo -n "-cache ${{ inputs.cache }}  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-debug
       run: |
-        if [[ "${ debug  }" == 'true' ]]; then
+        if [[ "${{ inputs.debug  }}" == 'true' ]]; then
           echo -n "-debug  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-ignorelist
       run: |
-        if [[ "${ ignorelist }" != 'false' ]]; then
-          echo -n "-ignorelist ${ ignorelist }  >> pmd-scan.sh"
+        if [[ "${{ inputs.ignorelist }}" != 'false' ]]; then
+          echo -n "-ignorelist ${{ inputs.ignorelist }}  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-help
       run: |
-        if [[ "${ help }" == 'true' ]]; then
+        if [[ "${{ inputs.help }}" == 'true' ]]; then
           echo -n "-help  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-language
       run: |
-        if [[ "${ language }" != 'false' ]]; then
-          echo -n "-language ${ language }  >> pmd-scan.sh"
+        if [[ "${{ inputs.language }}" != 'false' ]]; then
+          echo -n "-language ${{ inputs.language }}  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-norulesetcompatibility
       run: |
-        if [[ "${ norulesetcompatibility }" == 'true' ]]; then
+        if [[ "${{ inputs.norulesetcompatibility }}" == 'true' ]]; then
           echo -n "-norulesetcompatibility  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-no-cache
       run: |
-        if [[ "${ no-cache }" == 'true' ]]; then
+        if [[ "${{ inputs.no-cache }}" == 'true' ]]; then
           echo -n "-no-cache  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-reportfile
       run: |
-        if [[ "${ reportfile }" != 'false' ]]; then
-          echo -n "-reportfile ${ reportfile }  >> pmd-scan.sh"
+        if [[ "${{ inputs.reportfile }}" != 'false' ]]; then
+          echo -n "-reportfile ${{ inputs.reportfile }}  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-shortnames
       run: |
-        if [[ "${ shortnames }" == 'true' ]]; then
+        if [[ "${{ inputs.shortnames }}" == 'true' ]]; then
           echo -n "-shortnames  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-showsuppressed
       run: |
-        if [[ "${ showsuppressed }" == 'true' ]]; then
+        if [[ "${{ inputs.showsuppressed }}" == 'true' ]]; then
           echo -n "-showsuppressed  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-stress
       run: |
-        if [[ "${ stress }" == 'true' ]]; then
+        if [[ "${{ inputs.stress }}" == 'true' ]]; then
           echo -n "-stress  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-uri
       run: |
-        if [[ "${ uri }" != 'false' ]]; then
-          echo -n "-uri ${ uri }  >> pmd-scan.sh"
+        if [[ "${{ inputs.uri }}" != 'false' ]]; then
+          echo -n "-uri ${{ inputs.uri }}  >> pmd-scan.sh"
         fi
       shell: bash
 
     - id: check-version
       run: |
-        if [[ "${ version }" != 'false' ]]; then
-          echo -n "-version ${ version }  >> pmd-scan.sh"
+        if [[ "${{ inputs.version }}" != 'false' ]]; then
+          echo -n "-version ${{ inputs.version }}  >> pmd-scan.sh"
         fi
       shell: bash
 ###########################################
