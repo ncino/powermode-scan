@@ -131,13 +131,16 @@ runs:
     # Download and Unzip PMD
     - id: install-pmd
       run: |
+        echo "### Start Installation of PMD ###"
         wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${{ inputs.pmd-version }}"/pmd-bin-"${{ inputs.pmd-version }}".zip
         unzip pmd-bin-"${{ inputs.pmd-version }}".zip
+        echo "### End Installation of PMD ###"
       shell: bash
 
     # Identify Branch Target and Source for Differential Scans
     - id: set-branch-target-and-source
       run: |
+        echo "### Start Setting Branch Target and Source ###"
         if [ ${{ github.event_name }} == 'pull_request' ]; then
             echo "::set-output name=target::${{ github.base_ref }}"
             echo "::set-output name=source::${{ github.head_ref }}"
@@ -145,13 +148,17 @@ runs:
             echo "::set-output name=target::${{ github.event.repository.default_branch }}"
             echo "::set-output name=source::${{ github.ref }}"
         fi
+        echo "### End Setting Branch Target and Source ###"
       shell: bash
+      
     # Generate List of Files to Scan for a Differential Scan
     - id: generate-differential-filelist
       run: |
+        echo "### Start Generating Differential Filelist ###"
         if [ "${{ inputs.differential-scan }}" == 'true' ]; then
           git diff --name-only --diff-filter=d origin/"$TARGET_BRANCH"..origin/"${SOURCE_BRANCH#"refs/heads/"}" | paste -s -d "," >> diff-file.csv
         fi
+        echo "### End Generating Differential Filelist ###"
       shell: bash
 
     # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
@@ -159,6 +166,7 @@ runs:
     # Initialize Core Scan Components
     - id: initialize-scan
       run: |
+        echo "### Start Building Scan Script ###"
         echo -n "pmd-bin"${{ inputs.pmd-version }}"/bin/run.sh pmd \
             -dir ${{ inputs.dir }} \
             -rulesets ${{ inputs.rulesets }} \
@@ -278,6 +286,11 @@ runs:
           echo -n "-version ${{ inputs.version }}  >> pmd-scan.sh"
         fi
       shell: bash
+
+    - run: |
+        echo "### End Building Scan Script ###"
+      shell: bash
+
 ###########################################
 ### Finish adding additional arguments. ###
 ###########################################
