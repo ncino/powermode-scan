@@ -128,13 +128,15 @@ runs:
   using: "composite"
   steps:
 
-    - id: Download and Unzip PMD
+    # Download and Unzip PMD
+    - id: install-pmd
       run: |
         wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${ pmd-version }"/pmd-bin-"${ pmd-version }".zip
         unzip pmd-bin-"${ pmd-version }".zip
       shell: bash
 
-    - id: Identify Branch Target and Source for Differential Scans
+    # Identify Branch Target and Source for Differential Scans
+    - id: set-branch-target-and-source
       run: |
         if [ ${{ github.event_name }} == 'pull_request' ]; then
             echo "::set-output name=target::${{ github.base_ref }}"
@@ -144,8 +146,8 @@ runs:
             echo "::set-output name=source::${{ github.ref }}"
         fi
       shell: bash
-
-    - id: Generate List of Files to Scan for a Differential Scan
+    # Generate List of Files to Scan for a Differential Scan
+    - id: generate-differential-filelist
       run: |
         if [ "${ differential-scan }" == 'true' ]; then
           git diff --name-only --diff-filter=d origin/"$TARGET_BRANCH"..origin/"${SOURCE_BRANCH#"refs/heads/"}" | paste -s -d "," >> diff-file.csv
@@ -154,7 +156,8 @@ runs:
 
     # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
     # conditional tests.  If the conditional passes the argument is added to the scan script file.
-    - id: Initialize Core Scan Components
+    # Initialize Core Scan Components
+    - id: initialize-scan
       run: |
         echo -n "pmd-bin"${ pmd-version }"/bin/run.sh pmd \
             -dir ${ dir } \
@@ -171,28 +174,28 @@ runs:
 ###########################################################################
 ### Start adding additional scan arguments based on input from actions. ###
 ###########################################################################
-    - id: Check for differential-scan
+    - id: check-differential-scan
       run: |
         if [[ "${ differential-scan }" == 'true' ]]; then
           echo -n "-filelist ${ filelist } >> pmd-scan.sh"
         fi
       shell: bash
 
-    - id: Check for benchmark flag
+    - id: check-benchmark
       run: |
         if [[ "${ benchmark }" == 'true' ]]; then
           echo -n "-benchmark  >> pmd-scan.sh"
         fi
       shell: bash
 
-    - id: Check for cache flag
+    - id: check-cache
       run: |
         if [[ "${ use-cache }" != 'false' ]]; then
           echo -n "-cache ${ cache }  >> pmd-scan.sh"
         fi
       shell: bash
 
-    - id: Check for debug flag
+    - id: check-debug
       run: |
         if [[ "${ debug  }" == 'true' ]]; then
           echo -n "-debug  >> pmd-scan.sh"
@@ -206,35 +209,35 @@ runs:
         fi
       shell: bash
 
-    - id: Check for help flag
+    - id: check-help
       run: |
         if [[ "${ help }" == 'true' ]]; then
           echo -n "-help  >> pmd-scan.sh"
         fi
       shell: bash
 
-    - id: Check for language parameter
+    - id: check-language
       run: |
         if [[ "${ language }" != 'false' ]]; then
           echo -n "-language ${ language }  >> pmd-scan.sh"
         fi
       shell: bash
 
-    - id: Check for norulesetcompatibility flag
+    - id: check-norulesetcompatibility
       run: |
         if [[ "${ norulesetcompatibility }" == 'true' ]]; then
           echo -n "-norulesetcompatibility  >> pmd-scan.sh"
         fi
       shell: bash
 
-    - id: Check for no-cache flag
+    - id: check-no-cache
       run: |
         if [[ "${ no-cache }" == 'true' ]]; then
           echo -n "-no-cache  >> pmd-scan.sh"
         fi
       shell: bash
 
-    - id: Check for reportfile parameter
+    - id: check-reportfile
       run: |
         if [[ "${ reportfile }" != 'false' ]]; then
           echo -n "-reportfile ${ reportfile }  >> pmd-scan.sh"
@@ -248,28 +251,28 @@ runs:
         fi
       shell: bash
 
-    - id: Check for showsuppressed flag
+    - id: check-showsuppressed
       run: |
         if [[ "${ showsuppressed }" == 'true' ]]; then
           echo -n "-showsuppressed  >> pmd-scan.sh"
         fi
       shell: bash
 
-    - id: Check for stress flag
+    - id: check-stress
       run: |
         if [[ "${ stress }" == 'true' ]]; then
           echo -n "-stress  >> pmd-scan.sh"
         fi
       shell: bash
 
-    - id: Check for uri parameter
+    - id: check-uri
       run: |
         if [[ "${ uri }" != 'false' ]]; then
           echo -n "-uri ${ uri }  >> pmd-scan.sh"
         fi
       shell: bash
 
-    - id: Check for version parameter
+    - id: check-version
       run: |
         if [[ "${ version }" != 'false' ]]; then
           echo -n "-version ${ version }  >> pmd-scan.sh"
@@ -280,6 +283,6 @@ runs:
 ###########################################
 
     # Run PMD Scan
-    - id: Run PMD Scan
+    - id: run-pmd-scan
       run: pmd-scan.sh
       shell: bash
