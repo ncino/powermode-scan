@@ -145,9 +145,6 @@ runs:
           echo "Run the differential scan"
           echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}..${{ github.event.after }})" >> $GITHUB_ENV
         fi
-        echo "Printing diff-file.csv"
-        cat diff-file.csv
-        echo "	CI	:	${{ 	CI	 }}"
         echo "	GITHUB_WORKFLOW	:	${{ 	GITHUB_WORKFLOW	 }}"
         echo "	GITHUB_RUN_ID	:	${{ 	GITHUB_RUN_ID	 }}"
         echo "	GITHUB_RUN_NUMBER	:	${{ 	GITHUB_RUN_NUMBER	 }}"
