@@ -173,112 +173,112 @@ runs:
     - id: check-differential-scan
       run: |
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then
-          echo -n "-filelist diff-file.csv >> pmd-scan.sh"
+          echo -n "-filelist diff-file.csv " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-filelist
       run: |
         if [[ "${{ inputs.filelist }}" != 'false' ]]; then
-          echo -n "-filelist ${{ inputs.cache }} >> pmd-scan.sh"
+          echo -n "-filelist ${{ inputs.cache }} " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-benchmark
       run: |
         if [[ "${{ inputs.benchmark }}" == 'true' ]]; then
-          echo -n "-benchmark  >> pmd-scan.sh"
+          echo -n "-benchmark "  >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-cache
       run: |
         if [[ "${{ inputs.use-cache }}" != 'false' ]]; then
-          echo -n "-cache ${{ inputs.cache }}  >> pmd-scan.sh"
+          echo -n "-cache ${{ inputs.cache }} "  >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-debug
       run: |
         if [[ "${{ inputs.debug  }}" == 'true' ]]; then
-          echo -n "-debug  >> pmd-scan.sh"
+          echo -n "-debug " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-ignorelist
       run: |
         if [[ "${{ inputs.ignorelist }}" != 'false' ]]; then
-          echo -n "-ignorelist ${{ inputs.ignorelist }}  >> pmd-scan.sh"
+          echo -n "-ignorelist ${{ inputs.ignorelist }} " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-help
       run: |
         if [[ "${{ inputs.help }}" == 'true' ]]; then
-          echo -n "-help  >> pmd-scan.sh"
+          echo -n "-help " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-language
       run: |
         if [[ "${{ inputs.language }}" != 'false' ]]; then
-          echo -n "-language ${{ inputs.language }}  >> pmd-scan.sh"
+          echo -n "-language ${{ inputs.language }} "  >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-norulesetcompatibility
       run: |
         if [[ "${{ inputs.norulesetcompatibility }}" == 'true' ]]; then
-          echo -n "-norulesetcompatibility  >> pmd-scan.sh"
+          echo -n "-norulesetcompatibility " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-no-cache
       run: |
         if [[ "${{ inputs.no-cache }}" == 'true' ]]; then
-          echo -n "-no-cache  >> pmd-scan.sh"
+          echo -n "-no-cache " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-reportfile
       run: |
         if [[ "${{ inputs.reportfile }}" != 'false' ]]; then
-          echo -n "-reportfile ${{ inputs.reportfile }}  >> pmd-scan.sh"
+          echo -n "-reportfile ${{ inputs.reportfile }} " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-shortnames
       run: |
         if [[ "${{ inputs.shortnames }}" == 'true' ]]; then
-          echo -n "-shortnames  >> pmd-scan.sh"
+          echo -n "-shortnames " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-showsuppressed
       run: |
         if [[ "${{ inputs.showsuppressed }}" == 'true' ]]; then
-          echo -n "-showsuppressed  >> pmd-scan.sh"
+          echo -n "-showsuppressed " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-stress
       run: |
         if [[ "${{ inputs.stress }}" == 'true' ]]; then
-          echo -n "-stress  >> pmd-scan.sh"
+          echo -n "-stress " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-uri
       run: |
         if [[ "${{ inputs.uri }}" != 'false' ]]; then
-          echo -n "-uri ${{ inputs.uri }}  >> pmd-scan.sh"
+          echo -n "-uri ${{ inputs.uri }} " >> pmd-scan.sh
         fi
       shell: bash
 
     - id: check-version
       run: |
         if [[ "${{ inputs.version }}" != 'false' ]]; then
-          echo -n "-version ${{ inputs.version }}  >> pmd-scan.sh"
+          echo -n "-version ${{ inputs.version }} " >> pmd-scan.sh
         fi
       shell: bash
 
@@ -296,3 +296,4 @@ runs:
         chmod +x pmd-scan.sh
         pmd-scan.sh
       shell: bash
+
