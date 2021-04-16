@@ -144,31 +144,10 @@ runs:
         if [ "${{ inputs.differential-scan }}" == 'true' ]; then 
           echo "Run the differential scan"
           echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}..${{ github.event.after }})" >> $GITHUB_ENV
+          git diff --name-only ${{ github.event.before }}..${{ github.event.after }}| paste -s -d "," >> diff-file.csv
         fi
-        echo "GITHUB_WORKFLOW	:	${{ 	env.GITHUB_WORKFLOW	 }}"
-        echo "GITHUB_RUN_ID	:	${{ 	env.GITHUB_RUN_ID	 }}"
-        echo "GITHUB_RUN_NUMBER	:	${{ 	env.GITHUB_RUN_NUMBER	 }}"
-        echo "GITHUB_JOB	:	${{ 	env.GITHUB_JOB	 }}"
-        echo "GITHUB_ACTION	:	${{ 	env.GITHUB_ACTION	 }}"
-        echo "GITHUB_ACTIONS	:	${{ 	env.GITHUB_ACTIONS	 }}"
-        echo "GITHUB_ACTOR	:	${{ 	env.GITHUB_ACTOR	 }}"
-        echo "GITHUB_REPOSITORY	:	${{ 	env.GITHUB_REPOSITORY	 }}"
-        echo "GITHUB_EVENT_NAME	:	${{ 	env.GITHUB_EVENT_NAME	 }}"
-        echo "GITHUB_EVENT_PATH	:	${{ 	env.GITHUB_EVENT_PATH	 }}"
-        echo "GITHUB_WORKSPACE	:	${{ 	env.GITHUB_WORKSPACE	 }}"
-        echo "GITHUB_SHA	:	${{ 	env.GITHUB_SHA	 }}"
-        echo "GITHUB_REF	:	${{ 	env.GITHUB_REF	 }}"
-        echo "GITHUB_HEAD_REF	:	${{ 	env.GITHUB_HEAD_REF	 }}"
-        echo "GITHUB_BASE_REF	:	${{ 	env.GITHUB_BASE_REF	 }}"
-        echo "GITHUB_SERVER_URL	:	${{ 	env.GITHUB_SERVER_URL	 }}"
-        echo "GITHUB_API_URL	:	${{ 	env.GITHUB_API_URL	 }}"
-        echo "GITHUB_GRAPHQL_URL	:	${{ 	env.GITHUB_GRAPHQL_URL	 }}"
-        echo "Github Event Before : ${{ github.event.before }}"
-        echo "Github Event After : ${{ github.event.after }}"
-        echo "Changed Files : ${{ env.CHANGED_FILES }}"
-        echo "############################################"
-        printenv
-        echo "############################################"
+        cat diff-file.csv
+        echo "${{ env.CHANGED_FILES }}"
         echo "### End Generating Differential Filelist ###"
       shell: bash
 
