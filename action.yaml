@@ -137,44 +137,43 @@ runs:
         echo "### End Installation of PMD ###"
       shell: bash
 
-    # Identify Branch Target and Source for Differential Scans
-    - id: set-branch-target-and-source
-      run: |
-        echo "### Start Setting Branch Target and Source ###"
-        echo "Github Event Name: ${{ github.event_name }}"
-        if [ ${{ github.event_name }} == 'pull_request' ]; then
-            echo "::set-output name=target::${{ github.base_ref }}"
-            echo "::set-output name=source::${{ github.head_ref }}"
-        else
-            echo "::set-output name=target::${{ github.event.repository.default_branch }}"
-            echo "::set-output name=source::${{ github.ref }}"
-        fi
-
-        echo "Pull Request - Target set to Head Ref: ${{ github.head_ref }}"
-        echo "Pull Request - Source set to Base Ref: ${{ github.base_ref }}"
-
-        echo "Not Pull Request - Target set to Repo Default Branch: ${{ github.event.repository.default_branch }}"
-        echo "Not Pull Request - Source set to Github Ref: ${{ github.ref }}"
-
-        echo "Target: ${{ steps.set-branch-target-and-source.outputs.target }}"
-        echo "Source: ${{ steps.set-branch-target-and-source.outputs.source }}"
-        echo "### End Setting Branch Target and Source ###"
-      shell: bash
-
     # Generate List of Files to Scan for a Differential Scan
     - id: generate-differential-filelist
       run: |
         echo "### Start Generating Differential Filelist ###"
-        if [ "${{ inputs.differential-scan }}" == 'true' ]; then
-          ${{ github.action_path }}/pmd-analyser.sh 
+        if [ "${{ inputs.differential-scan }}" == 'true' ]; then 
+          echo "Run the differential scan"
+          echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}..${{ github.event.after }})" >> $GITHUB_ENV
         fi
         echo "Printing diff-file.csv"
         cat diff-file.csv
+        echo "	CI	:	${{ 	CI	 }}"
+        echo "	GITHUB_WORKFLOW	:	${{ 	GITHUB_WORKFLOW	 }}"
+        echo "	GITHUB_RUN_ID	:	${{ 	GITHUB_RUN_ID	 }}"
+        echo "	GITHUB_RUN_NUMBER	:	${{ 	GITHUB_RUN_NUMBER	 }}"
+        echo "	GITHUB_JOB	:	${{ 	GITHUB_JOB	 }}"
+        echo "	GITHUB_ACTION	:	${{ 	GITHUB_ACTION	 }}"
+        echo "	GITHUB_ACTIONS	:	${{ 	GITHUB_ACTIONS	 }}"
+        echo "	GITHUB_ACTOR	:	${{ 	GITHUB_ACTOR	 }}"
+        echo "	GITHUB_REPOSITORY	:	${{ 	GITHUB_REPOSITORY	 }}"
+        echo "	GITHUB_EVENT_NAME	:	${{ 	GITHUB_EVENT_NAME	 }}"
+        echo "	GITHUB_EVENT_PATH	:	${{ 	GITHUB_EVENT_PATH	 }}"
+        echo "	GITHUB_WORKSPACE	:	${{ 	GITHUB_WORKSPACE	 }}"
+        echo "	GITHUB_SHA	:	${{ 	GITHUB_SHA	 }}"
+        echo "	GITHUB_REF	:	${{ 	GITHUB_REF	 }}"
+        echo "	GITHUB_HEAD_REF	:	${{ 	GITHUB_HEAD_REF	 }}"
+        echo "	GITHUB_BASE_REF	:	${{ 	GITHUB_BASE_REF	 }}"
+        echo "	GITHUB_SERVER_URL	:	${{ 	GITHUB_SERVER_URL	 }}"
+        echo "	GITHUB_API_URL	:	${{ 	GITHUB_API_URL	 }}"
+        echo "	GITHUB_GRAPHQL_URL	:	${{ 	GITHUB_GRAPHQL_URL	 }}"
+        echo "  Github Event Before : ${{ github.event.before }}"
+        echo "  Github Event After : ${{ github.event.after }}"
+        echo "  Changed Files : ${{ env.CHANGED_FILES }}"
+        echo "############################################"
+        printenv
+        echo "############################################"
         echo "### End Generating Differential Filelist ###"
       shell: bash
-      env:
-        TARGET_BRANCH: ${{ steps.branches.outputs.target }}
-        SOURCE_BRANCH: ${{ steps.branches.outputs.source }}
 
     # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
     # conditional tests.  If the conditional passes the argument is added to the scan script file.
@@ -314,5 +313,5 @@ runs:
     - id: run-pmd-scan
       run: |
         chmod +x pmd-scan.sh
-        pmd-scan.sh
+        ${{ github.action_path }}/pmd-scan.sh
       shell: bash
