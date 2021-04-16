@@ -59,7 +59,7 @@ inputs:
     default: 'true'
   filelist:
     description:    'Path to file containing a comma delimited list of files to analyze. If this is given, then you 
-                    do not need to provide -dir.'
+                    do not need to provide -dir. Do not use in combination with Differential Scan.'
     required: false
     default: 'false'
   ignorelist: 
@@ -142,12 +142,10 @@ runs:
       run: |
         echo "### Start Generating Differential Filelist ###"
         if [ "${{ inputs.differential-scan }}" == 'true' ]; then 
-          echo "Run the differential scan"
-          echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}..${{ github.event.after }})" >> $GITHUB_ENV
           git diff --name-only ${{ github.event.before }}..${{ github.event.after }}| paste -s -d "," >> diff-file.csv
         fi
+        echo "Printing differential file: "
         cat diff-file.csv
-        echo "${{ env.CHANGED_FILES }}"
         echo "### End Generating Differential Filelist ###"
       shell: bash
 
@@ -175,7 +173,14 @@ runs:
     - id: check-differential-scan
       run: |
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then
-          echo -n "-filelist ${{ inputs.filelist }} >> pmd-scan.sh"
+          echo -n "-filelist diff-file.csv >> pmd-scan.sh"
+        fi
+      shell: bash
+
+    - id: check-filelist
+      run: |
+        if [[ "${{ inputs.filelist }}" != 'false' ]]; then
+          echo -n "-filelist ${{ inputs.cache }} >> pmd-scan.sh"
         fi
       shell: bash
 
@@ -289,5 +294,5 @@ runs:
     - id: run-pmd-scan
       run: |
         chmod +x pmd-scan.sh
-        ${{ github.action_path }}/pmd-scan.sh
+        pmd-scan.sh
       shell: bash
