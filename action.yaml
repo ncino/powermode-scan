@@ -155,7 +155,7 @@ runs:
     - id: initialize-scan
       run: |
         echo "### Start Building Scan Script ###"
-        echo -n "pmd-bin"${{ inputs.pmd-version }}"/bin/run.sh pmd \
+        echo -n "pmd-bin-${{ inputs.pmd-version }}/bin/run.sh pmd \
             -dir ${{ inputs.dir }} \
             -rulesets ${{ inputs.rulesets }} \
             -format ${{ inputs.format }} \
