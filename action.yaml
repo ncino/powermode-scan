@@ -10,7 +10,8 @@ inputs:
     description:    'Defines what version of PMD to download and run.'
     required: true
   rulesets:
-    description:    'Comma-separated list of ruleset or rule references.'
+    description:    'Comma-separated list of ruleset or rule references.  Some examples are available under 
+                    powermode-scan/pmd-rulesets.'
     required: true
   dir:
     description:    'Required Root directory for the analyzed sources.'
