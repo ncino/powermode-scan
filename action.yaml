@@ -164,7 +164,7 @@ runs:
             -ignorelist ${{ inputs.ignorelist }} \
             -minimumpriority ${{ inputs.minimumpriority }} \
             -suppressmarker ${{ inputs.suppressmarker }}
-            -threads ${{ inputs.threads }} " > $HOME/$HOME/pmd-scan.sh
+            -threads ${{ inputs.threads }} " > $HOME/pmd-scan.sh
       shell: bash
 
 ###########################################################################
