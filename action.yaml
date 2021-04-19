@@ -162,7 +162,6 @@ runs:
             -format ${{ inputs.format }} \
             -encoding ${{ inputs.encoding }} \
             -failOnViolation ${{ inputs.failOnViolation }} \
-            -ignorelist ${{ inputs.ignorelist }} \
             -minimumpriority ${{ inputs.minimumpriority }} \
             -suppressmarker ${{ inputs.suppressmarker }} \
             -threads ${{ inputs.threads }} " > $HOME/pmd-scan.sh
@@ -295,6 +294,7 @@ runs:
     - id: run-pmd-scan
       run: |
         chmod +x $HOME/pmd-scan.sh
+        cat $HOME/pmd-scan.sh
         $HOME/pmd-scan.sh
       shell: bash
 
