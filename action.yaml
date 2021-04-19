@@ -50,7 +50,7 @@ inputs:
     description:    'Specifies the character set encoding of the source code files PMD is reading. The valid values are 
                     the standard character sets of java.nio.charset.Charset.'
     required: false
-    default: 'false'
+    default: 'UTF-8'
   failOnViolation:
     description:    'Specifies whether PMD exits with non-zero status if violations are found. By default PMD exits 
                     with status 4 if violations are found. Disable this feature with -failOnViolation false to exit 
@@ -163,7 +163,7 @@ runs:
             -failOnViolation ${{ inputs.failOnViolation }} \
             -ignorelist ${{ inputs.ignorelist }} \
             -minimumpriority ${{ inputs.minimumpriority }} \
-            -suppressmarker ${{ inputs.suppressmarker }}
+            -suppressmarker ${{ inputs.suppressmarker }} \
             -threads ${{ inputs.threads }} " > $HOME/pmd-scan.sh
       shell: bash
 
