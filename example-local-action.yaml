@@ -1,0 +1,43 @@
+name: powermode-scan
+
+on:
+  pull_request:
+    branches: [ release, master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  powermode-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+
+      - name: Load Cached Scan Runs
+        uses: actions/cache@v2
+        with:
+          path: pmd-cache
+          key: pmd-cache-${{ runner.os }}
+
+      - name: powermode-scan
+        uses: ncino/powermode-scan@v1
+        with:
+          pmd-version: '6.32.0'
+          rulesets: '$GITHUB_WORKSPACE/.github/workflows/apexAndVisualForceRuleset.xml'
+          dir: '$GITHUB_WORKSPACE'
+          differential-scan: 'true'
+          format: 'xml'
+          cache: 'pmd-cache'
+          failOnViolation: 'false'
+          reportfile: './report.xml'
+
+      - name: Annotate with PMD Results
+        uses: jwgmeligmeyling/pmd-github-action@v1.2
+        with:
+          path: './report.xml'
+          name: 'PMD Annotation'
+          
