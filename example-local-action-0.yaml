@@ -1,0 +1,60 @@
+name: powermode-scan
+
+on:
+  pull_request:
+    branches: [ release, master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  powermode-scan:
+    runs-on: ubuntu-latest
+    
+    # Fetch-depth is necessary when running a differential scan.
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+
+      # Used in speeding up runs in multiple pull requests.
+      - name: Load Cached Scan Runs
+        uses: actions/cache@v2
+        with:
+          path: pmd-cache
+          key: pmd-cache-${{ runner.os }}-${{ github.event.after }}
+
+      # diff-file.csv is generated using a git diff command when the differential-scan input is set to true.
+      - name: powermode-scan-pull-request
+        uses: ncino/powermode-scan@v1
+        if: ${{ github.event_name == 'pull-request' }}
+        with:
+          pmd-version: '6.33.0'
+          rulesets: '$GITHUB_WORKSPACE/.github/workflows/apexAndVisualForceRuleset.xml'
+          differential-scan: 'true'
+          format: 'xml'
+          cache: 'pmd-cache'
+          failOnViolation: 'false'
+          reportfile: './report.xml'
+          filelist: 'diff-file.csv'
+
+      # This provides the option to scan the entire repo using the workflow dispatch button instead of a pull request.
+      - name: powermode-scan-workflow-dispatch
+        uses: ncino/powermode-scan@v1
+        if: ${{ github.event_name != 'pull-request' }}
+        with:
+          pmd-version: '6.33.0'
+          rulesets: '$GITHUB_WORKSPACE/.github/workflows/apexAndVisualForceRuleset.xml'
+          differential-scan: 'true'
+          format: 'xml'
+          cache: 'pmd-cache'
+          failOnViolation: 'false'
+          reportfile: './report.xml'
+          dir: '$GITHUB_WORKSPACE'
+
+      - name: Annotate with PMD Results
+        uses: jwgmeligmeyling/pmd-github-action@v1.2
+        with:
+          path: './report.xml'
+          name: 'PMD Annotation'

@@ -1,3 +1,6 @@
+################
+### Branding ###
+################
 name: 'powermode-scan'
 author: 'Jason True'
 description: 'Run static code pattern analysis scan for Apex security using PMD.'
@@ -5,26 +8,26 @@ branding:
   icon: 'user-check'  
   color: 'green'
 
+################
+###  Inputs  ###
+################
 inputs:
   pmd-version:
     description:    'Defines what version of PMD to download and run.'
     required: true
+  
   rulesets:
     description:    'Comma-separated list of ruleset or rule references.  Some examples are available under 
                     powermode-scan/pmd-rulesets.'
     required: true
-  dir:
-    description:    'Required Root directory for the analyzed sources.'
-    required: true
+  
   differential-scan:
     description:    'Run the scan on all files or only files changed in the pull request?  If set to true this will 
-                    ignore the scan-root-directory setting and use a generated diff file instead.'
+                    ignore the scan-root-directory setting and use a generated diff file instead. This is separate from 
+                    PMDs differential scan capability which will speed up scanning but still evaluate the entire dir location.
+                    Setting this value to true will generate a list of files that were changed in the pull request and requires.'
     required: true
-  format:
-    description:    'Output format of the analysis report. Options: sarif, codeclimate, csv, emacs, html, ideaj,
-                    json, summaryhtml, text (default), textcolor, textpad, vbhtml, xml, xslt, yahtml'
-    required: false
-    default: 'text'
+  
   auxclasspath: 
     description:    'Specifies the classpath for libraries used by the source code. This is used to resolve types in 
                     source files. The platform specific path delimiter (":" on Linux, ";" on Windows) is used to 
@@ -32,11 +35,13 @@ inputs:
                     consecutive lines can be specified.'
     required: false
     default: 'false'
+  
   benchmark:
     description:    'Enables benchmark mode, which outputs a benchmark report upon completion. 
                     The report is sent to standard error.'
     required: false
     default: 'false'
+  
   cache: 
     description:    'Specify the location of the cache file for incremental analysis. This should be the full path to 
                     the file, including the desired file name (not just the parent directory). If the file does not 
@@ -44,120 +49,164 @@ inputs:
                     up-to-date rule violations. This can greatly improve analysis performance and is highly recommended.'
     required: false
     default: 'false'
+  
   debug:
     description:    'Debug mode. Prints more log output.'
     required: false
+    default: 'false'
+  
+  dir:
+    description:    'Required Root directory for the analyzed sources.'
+    required: false
+    default: 'false'
+  
   encoding:
     description:    'Specifies the character set encoding of the source code files PMD is reading. The valid values are 
                     the standard character sets of java.nio.charset.Charset.'
     required: false
     default: 'UTF-8'
+  
   failOnViolation:
     description:    'Specifies whether PMD exits with non-zero status if violations are found. By default PMD exits 
                     with status 4 if violations are found. Disable this feature with -failOnViolation false to exit 
                     with 0 instead and just output the report.	'
     required: false
     default: 'true'
+  
+  format:
+    description:    'Output format of the analysis report. Options: sarif, codeclimate, csv, emacs, html, ideaj,
+                    json, summaryhtml, text (default), textcolor, textpad, vbhtml, xml, xslt, yahtml'
+    required: false
+    default: 'text'
+  
   filelist:
     description:    'Path to file containing a comma delimited list of files to analyze. If this is given, then you 
                     do not need to provide -dir. Do not use in combination with Differential Scan.'
     required: false
     default: 'false'
+  
   ignorelist: 
     description:    'Path to file containing a comma delimited list of files to ignore. This option can be combined 
                     with -dir and -filelist. This ignore list takes precedence over any files in the filelist.'
     required: false
     default: 'false'
+  
   help:
     description:    'Display help on usage.'
     required: false
     default: 'false'
+  
   language:
     description:    'Specify the language PMD should use. Used together with -version.'
     required: false
     default: 'false'
+  
   minimumpriority:
     description:    'Rule priority threshold, rules with lower priority than configured here will not be used.' 
     required: false
     default: '5'
+  
   norulesetcompatibility:
     description:    'Disable automatic fixing of invalid rule references. Without the switch, PMD tries to 
                     automatically replace rule references that point to moved or renamed rules with the newer 
                     location if possible. Disabling it is not recommended.'
     required: false
     default: 'false'
+  
   no-cache:
     description:    'Explicitly disables incremental analysis. This switch turns off suggestions to use Incremental 
                     Analysis, and causes the -cache option to be discarded if it is provided.'
     required: false
     default: 'false'
+  
   reportfile:
     description:    'Path to a file in which the report output will be sent. By default the report is printed on 
                     standard output.'
     required: false
     default: 'false'
+  
   shortnames:
     description:    'Prints shortened filenames in the report.'
     required: false
     default: 'false'
+  
   showsuppressed:
     description:    'Causes the suppressed rule violations to be added to the report.'
     required: false
     default: 'false'
+  
   stress:
     description:    'Performs a stress test.'
     required: false
     default: 'false'
+  
   suppressmarker:
     description:    'Specifies the comment token that marks lines which PMD should ignore.'
     required: false
     default: 'NOPMD'
+  
   threads:
     description:    'Sets the number of threads used by PMD. Set threads to 0 to disable multi-threading processing.'
     required: false
     default: '1'
+  
   uri:
     description:    'Database URI for sources. If this is given, then you do not need to provide -dir'
     required: false
     default: 'false'
+  
   version: 
     description:    'Specify the version of a language PMD should use. Used together with -language.'
     required: false
     default: 'false'
 
+#########################
+###  Composite Steps  ###
+#########################
 runs:
   using: "composite"
   steps:
 
-    # Download and Unzip PMD
+    # Download and Unzip PMD 
+    # Access PMD's run script with this location: pmd-bin-${{ inputs.pmd-version }}/bin/run.sh
     - id: install-pmd
       run: |
-        echo "### Start Installation of PMD ###"
+        echo "::group::Install PMD"
+        echo "Start Installation of PMD"
+        echo "Downloading PMD version ${{ inputs.pmd-version }}"
         wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${{ inputs.pmd-version }}"/pmd-bin-"${{ inputs.pmd-version }}".zip
+        echo "Unzipping downloaded PMD zip."
         unzip pmd-bin-"${{ inputs.pmd-version }}".zip
-        echo "### End Installation of PMD ###"
+        echo "End Installation of PMD"
+        echo "::endgroup::"
       shell: bash
 
-    # Generate List of Files to Scan for a Differential Scan
+    # Generate list of changed files when differential scan is set to true.
     - id: generate-differential-filelist
       run: |
-        echo "### Start Generating Differential Filelist ###"
-        if [ "${{ inputs.differential-scan }}" == 'true' ]; then 
+        echo "::group::Generate List of Changed Files"
+        echo "Start Generating List of Changed Files"
+
+        if [ "${{ inputs.differential-scan }}" == 'true']; then 
+          echo "Running PMD with only changed files because differential scan is set to true."
           git diff --name-only ${{ github.event.before }}..${{ github.event.after }}| paste -s -d "," >> diff-file.csv
+          echo "Printing differential file: "
+          cat diff-file.csv
+        else
+          echo "Differential scan is set to false, a diff of changed files will not be generated."
         fi
-        echo "Printing differential file: "
-        cat diff-file.csv
-        echo "### End Generating Differential Filelist ###"
+
+        echo "End Generating Differential Filelist"
+        echo "::endgroup::"
       shell: bash
 
     # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
     # conditional tests.  If the conditional passes the argument is added to the scan script file.
-    # Initialize Core Scan Components
     - id: initialize-scan
       run: |
-        echo "### Start Building Scan Script ###"
+        echo "::group::Build PMD Scan Script"
+        echo "Start Building Scan Script"
         echo -n "pmd-bin-${{ inputs.pmd-version }}/bin/run.sh pmd \
-            -dir ${{ inputs.dir }} \
             -rulesets ${{ inputs.rulesets }} \
             -format ${{ inputs.format }} \
             -encoding ${{ inputs.encoding }} \
@@ -165,136 +214,185 @@ runs:
             -minimumpriority ${{ inputs.minimumpriority }} \
             -suppressmarker ${{ inputs.suppressmarker }} \
             -threads ${{ inputs.threads }} " > $HOME/pmd-scan.sh
+        echo "pmd-scan initialized with base values:"
+        cat $HOME/pmd-scan.sh
       shell: bash
 
-###########################################################################
-### Start adding additional scan arguments based on input from actions. ###
-###########################################################################
-    - id: check-differential-scan
-      run: |
-        if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then
-          echo -n "-filelist diff-file.csv " >> $HOME/pmd-scan.sh
-        fi
+    - run: echo "Checking inputs for inclusion in scan command script."
       shell: bash
-
-    - id: check-filelist
+    
+    - id: check-auxclasspath
       run: |
-        if [[ "${{ inputs.filelist }}" != 'false' ]]; then
-          echo -n "-filelist ${{ inputs.cache }} " >> $HOME/pmd-scan.sh
+        if [[ "${{ inputs.auxclasspath }}" != 'false' ]]; then
+          echo "auxclasspath has been set to ${{ inputs.auxclasspath }}, adding to scan script."
+          echo -n "-auxclasspath ${{ inputs.auxclasspath }} " >> $HOME/pmd-scan.sh
+        else
+          echo "auxclasspath has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-benchmark
       run: |
         if [[ "${{ inputs.benchmark }}" == 'true' ]]; then
+          echo "benchmark has been set to ${{ inputs.benchmark }}, adding to scan script."
           echo -n "-benchmark "  >> $HOME/pmd-scan.sh
+        else
+          echo "benchmark has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-cache
       run: |
         if [[ "${{ inputs.use-cache }}" != 'false' ]]; then
+          echo "cache has been set to ${{ inputs.cache }}, adding to scan script."
           echo -n "-cache ${{ inputs.cache }} "  >> $HOME/pmd-scan.sh
+        else
+          echo "cache has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-debug
       run: |
         if [[ "${{ inputs.debug  }}" == 'true' ]]; then
+          echo "debug has been set to ${{ inputs.debug }}, adding to scan script."
           echo -n "-debug " >> $HOME/pmd-scan.sh
+        else
+          echo "debug has not been set, it will not be included in the scan."
+        fi
+      shell: bash
+
+    - id: check-filelist
+      run: |
+        if [[ "${{ inputs.filelist }}" != 'false' ]]; then
+          echo "filelist has been set to ${{ inputs.filelist }}, adding to scan script."
+          echo -n "-filelist ${{ inputs.filelist }} " >> $HOME/pmd-scan.sh
+        else
+          echo "filelist has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-ignorelist
       run: |
         if [[ "${{ inputs.ignorelist }}" != 'false' ]]; then
+          echo "ignorelist has been set to ${{ inputs.ignorelist }}, adding to scan script."
           echo -n "-ignorelist ${{ inputs.ignorelist }} " >> $HOME/pmd-scan.sh
+        else
+          echo "ignorelist has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-help
       run: |
         if [[ "${{ inputs.help }}" == 'true' ]]; then
+          echo "help has been set to ${{ inputs.help }}, adding to scan script."
           echo -n "-help " >> $HOME/pmd-scan.sh
+        else
+          echo "help has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-language
       run: |
         if [[ "${{ inputs.language }}" != 'false' ]]; then
+          echo "language has been set to ${{ inputs.language }}, adding to scan script."
           echo -n "-language ${{ inputs.language }} "  >> $HOME/pmd-scan.sh
+        else
+          echo "language has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-norulesetcompatibility
       run: |
         if [[ "${{ inputs.norulesetcompatibility }}" == 'true' ]]; then
+          echo "norulesetcompatibility has been set to ${{ inputs.norulesetcompatibility }}, adding to scan script."
           echo -n "-norulesetcompatibility " >> $HOME/pmd-scan.sh
+        else
+          echo "norulesetcompatibility has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-no-cache
       run: |
         if [[ "${{ inputs.no-cache }}" == 'true' ]]; then
+          echo "no-cache has been set to ${{ inputs.no-cache }}, adding to scan script."
           echo -n "-no-cache " >> $HOME/pmd-scan.sh
+        else
+          echo "no-cache has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-reportfile
       run: |
         if [[ "${{ inputs.reportfile }}" != 'false' ]]; then
+          echo "reportfile has been set to ${{ inputs.reportfile }}, adding to scan script."
           echo -n "-reportfile ${{ inputs.reportfile }} " >> $HOME/pmd-scan.sh
+        else
+          echo "reportfile has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-shortnames
       run: |
         if [[ "${{ inputs.shortnames }}" == 'true' ]]; then
+          echo "shortnames has been set to ${{ inputs.shortnames }}, adding to scan script."
           echo -n "-shortnames " >> $HOME/pmd-scan.sh
+        else
+          echo "shortnames has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-showsuppressed
       run: |
         if [[ "${{ inputs.showsuppressed }}" == 'true' ]]; then
+          echo "showsuppressed has been set to ${{ inputs.showsuppressed }}, adding to scan script."
           echo -n "-showsuppressed " >> $HOME/pmd-scan.sh
+        else
+          echo "showsuppressed has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-stress
       run: |
         if [[ "${{ inputs.stress }}" == 'true' ]]; then
+          echo "stress has been set to ${{ inputs.stress }}, adding to scan script."
           echo -n "-stress " >> $HOME/pmd-scan.sh
+        else
+          echo "stress has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-uri
       run: |
         if [[ "${{ inputs.uri }}" != 'false' ]]; then
+          echo "uri has been set to ${{ inputs.uri }}, adding to scan script."
           echo -n "-uri ${{ inputs.uri }} " >> $HOME/pmd-scan.sh
+        else
+          echo "uri has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-version
       run: |
         if [[ "${{ inputs.version }}" != 'false' ]]; then
+          echo "version has been set to ${{ inputs.version }}, adding to scan script."
           echo -n "-version ${{ inputs.version }} " >> $HOME/pmd-scan.sh
+        else
+          echo "version has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - run: |
-        echo "### End Building Scan Script ###"
+        echo "End Building Scan Script"
+        echo "::endgroup::"
       shell: bash
-
-###########################################
-### Finish adding additional arguments. ###
-###########################################
 
     # Run PMD Scan
     - id: run-pmd-scan
       run: |
-        chmod +x $HOME/pmd-scan.sh
+        echo "::group::Run PMD Scan Script"
+        echo "Printing script command: "
         cat $HOME/pmd-scan.sh
+        chmod +x $HOME/pmd-scan.sh
         $HOME/pmd-scan.sh
+        echo "::endgroup::"
       shell: bash
-
