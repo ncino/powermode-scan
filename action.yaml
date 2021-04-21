@@ -208,11 +208,11 @@ runs:
             -minimumpriority ${{ inputs.minimumpriority }} \
             -suppressmarker ${{ inputs.suppressmarker }} \
             -threads ${{ inputs.threads }} " > $HOME/pmd-scan.sh
-        echo "pmd-scan initialized with base values:"
+        echo "pmd-scan initialized with these base values:"
         cat $HOME/pmd-scan.sh 
       shell: bash
 
-    - run: echo "Checking inputs for inclusion in scan command script."
+    - run: echo "Checking inputs that have been set to include in scan command script."
       shell: bash
     
     - id: check-auxclasspath
@@ -375,9 +375,7 @@ runs:
         fi
       shell: bash
 
-    - run: |
-        echo "End Building Scan Script"
-        echo "::endgroup::"
+    - run: echo "::endgroup::"
       shell: bash
 
     # Run PMD Scan
