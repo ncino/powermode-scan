@@ -171,13 +171,11 @@ runs:
     # Access PMD's run script with this location: pmd-bin-${{ inputs.pmd-version }}/bin/run.sh
     - id: install-pmd
       run: |
-        echo "::group::Install PMD"
         echo "::group::Downloading PMD version ${{ inputs.pmd-version }} "
         wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${{ inputs.pmd-version }}"/pmd-bin-"${{ inputs.pmd-version }}".zip
         echo "::endgroup::"
         echo "::group::Unzipping downloaded PMD zip"
         unzip pmd-bin-"${{ inputs.pmd-version }}".zip
-        echo "::endgroup::"
         echo "::endgroup::"
       shell: bash
 
@@ -187,7 +185,7 @@ runs:
         echo "::group::Generate List of Changed Files"
         echo "Start Generating List of Changed Files"
 
-        if [ "${{ inputs.differential-scan }}" == 'true']; then 
+        if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
           git diff --name-only ${{ github.event.before }}..${{ github.event.after }}| paste -s -d "," >> diff-file.csv
           echo "Printing differential file: "
@@ -218,166 +216,166 @@ runs:
         cat $HOME/pmd-scan.sh 
       shell: bash
 
-    - run: echo "\nChecking inputs for inclusion in scan command script."
+    - run: echo "Checking inputs for inclusion in scan command script."
       shell: bash
     
     - id: check-auxclasspath
       run: |
         if [[ "${{ inputs.auxclasspath }}" != 'false' ]]; then
-          echo "\t + auxclasspath has been set to ${{ inputs.auxclasspath }}, adding to scan script."
+          echo " + auxclasspath has been set to ${{ inputs.auxclasspath }}, adding to scan script."
           echo -n "-auxclasspath ${{ inputs.auxclasspath }} " >> $HOME/pmd-scan.sh
         else
-          echo "\t - auxclasspath has not been set, it will not be included in the scan."
+          echo " - auxclasspath has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-benchmark
       run: |
         if [[ "${{ inputs.benchmark }}" == 'true' ]]; then
-          echo "\t + benchmark has been set to ${{ inputs.benchmark }}, adding to scan script."
+          echo " + benchmark has been set to ${{ inputs.benchmark }}, adding to scan script."
           echo -n "-benchmark "  >> $HOME/pmd-scan.sh
         else
-          echo "\t - benchmark has not been set, it will not be included in the scan."
+          echo " - benchmark has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-cache
       run: |
         if [[ "${{ inputs.use-cache }}" != 'false' ]]; then
-          echo "\t + cache has been set to ${{ inputs.cache }}, adding to scan script."
+          echo " + cache has been set to ${{ inputs.cache }}, adding to scan script."
           echo -n "-cache ${{ inputs.cache }} "  >> $HOME/pmd-scan.sh
         else
-          echo "\t - cache has not been set, it will not be included in the scan."
+          echo " - cache has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-debug
       run: |
         if [[ "${{ inputs.debug  }}" == 'true' ]]; then
-          echo "\t + debug has been set to ${{ inputs.debug }}, adding to scan script."
+          echo " + debug has been set to ${{ inputs.debug }}, adding to scan script."
           echo -n "-debug " >> $HOME/pmd-scan.sh
         else
-          echo "\t - debug has not been set, it will not be included in the scan."
+          echo " - debug has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-filelist
       run: |
         if [[ "${{ inputs.filelist }}" != 'false' ]]; then
-          echo "\t + filelist has been set to ${{ inputs.filelist }}, adding to scan script."
+          echo " + filelist has been set to ${{ inputs.filelist }}, adding to scan script."
           echo -n "-filelist ${{ inputs.filelist }} " >> $HOME/pmd-scan.sh
         else
-          echo "\t - filelist has not been set, it will not be included in the scan."
+          echo " - filelist has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-ignorelist
       run: |
         if [[ "${{ inputs.ignorelist }}" != 'false' ]]; then
-          echo "\t + ignorelist has been set to ${{ inputs.ignorelist }}, adding to scan script."
+          echo " + ignorelist has been set to ${{ inputs.ignorelist }}, adding to scan script."
           echo -n "-ignorelist ${{ inputs.ignorelist }} " >> $HOME/pmd-scan.sh
         else
-          echo "\t - ignorelist has not been set, it will not be included in the scan."
+          echo " - ignorelist has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-help
       run: |
         if [[ "${{ inputs.help }}" == 'true' ]]; then
-          echo "\t + help has been set to ${{ inputs.help }}, adding to scan script."
+          echo " + help has been set to ${{ inputs.help }}, adding to scan script."
           echo -n "-help " >> $HOME/pmd-scan.sh
         else
-          echo "\t - help has not been set, it will not be included in the scan."
+          echo " - help has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-language
       run: |
         if [[ "${{ inputs.language }}" != 'false' ]]; then
-          echo "\t + language has been set to ${{ inputs.language }}, adding to scan script."
+          echo " + language has been set to ${{ inputs.language }}, adding to scan script."
           echo -n "-language ${{ inputs.language }} "  >> $HOME/pmd-scan.sh
         else
-          echo "\t - language has not been set, it will not be included in the scan."
+          echo " - language has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-norulesetcompatibility
       run: |
         if [[ "${{ inputs.norulesetcompatibility }}" == 'true' ]]; then
-          echo "\t + norulesetcompatibility has been set to ${{ inputs.norulesetcompatibility }}, adding to scan script."
+          echo " + norulesetcompatibility has been set to ${{ inputs.norulesetcompatibility }}, adding to scan script."
           echo -n "-norulesetcompatibility " >> $HOME/pmd-scan.sh
         else
-          echo "\t - norulesetcompatibility has not been set, it will not be included in the scan."
+          echo " - norulesetcompatibility has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-no-cache
       run: |
         if [[ "${{ inputs.no-cache }}" == 'true' ]]; then
-          echo "\t + no-cache has been set to ${{ inputs.no-cache }}, adding to scan script."
+          echo " + no-cache has been set to ${{ inputs.no-cache }}, adding to scan script."
           echo -n "-no-cache " >> $HOME/pmd-scan.sh
         else
-          echo "\t - no-cache has not been set, it will not be included in the scan."
+          echo " - no-cache has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-reportfile
       run: |
         if [[ "${{ inputs.reportfile }}" != 'false' ]]; then
-          echo "\t + reportfile has been set to ${{ inputs.reportfile }}, adding to scan script."
+          echo " + reportfile has been set to ${{ inputs.reportfile }}, adding to scan script."
           echo -n "-reportfile ${{ inputs.reportfile }} " >> $HOME/pmd-scan.sh
         else
-          echo "\t - reportfile has not been set, it will not be included in the scan."
+          echo " - reportfile has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-shortnames
       run: |
         if [[ "${{ inputs.shortnames }}" == 'true' ]]; then
-          echo "\t + shortnames has been set to ${{ inputs.shortnames }}, adding to scan script."
+          echo " + shortnames has been set to ${{ inputs.shortnames }}, adding to scan script."
           echo -n "-shortnames " >> $HOME/pmd-scan.sh
         else
-          echo "\t - shortnames has not been set, it will not be included in the scan."
+          echo " - shortnames has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-showsuppressed
       run: |
         if [[ "${{ inputs.showsuppressed }}" == 'true' ]]; then
-          echo "\t + showsuppressed has been set to ${{ inputs.showsuppressed }}, adding to scan script."
+          echo " + showsuppressed has been set to ${{ inputs.showsuppressed }}, adding to scan script."
           echo -n "-showsuppressed " >> $HOME/pmd-scan.sh
         else
-          echo "\t - showsuppressed has not been set, it will not be included in the scan."
+          echo " - showsuppressed has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-stress
       run: |
         if [[ "${{ inputs.stress }}" == 'true' ]]; then
-          echo "\t + stress has been set to ${{ inputs.stress }}, adding to scan script."
+          echo " + stress has been set to ${{ inputs.stress }}, adding to scan script."
           echo -n "-stress " >> $HOME/pmd-scan.sh
         else
-          echo "\t - stress has not been set, it will not be included in the scan."
+          echo " - stress has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-uri
       run: |
         if [[ "${{ inputs.uri }}" != 'false' ]]; then
-          echo "\t + uri has been set to ${{ inputs.uri }}, adding to scan script."
+          echo " + uri has been set to ${{ inputs.uri }}, adding to scan script."
           echo -n "-uri ${{ inputs.uri }} " >> $HOME/pmd-scan.sh
         else
-          echo "\t - uri has not been set, it will not be included in the scan."
+          echo " - uri has not been set, it will not be included in the scan."
         fi
       shell: bash
 
     - id: check-version
       run: |
         if [[ "${{ inputs.version }}" != 'false' ]]; then
-          echo "\t + version has been set to ${{ inputs.version }}, adding to scan script."
+          echo " + version has been set to ${{ inputs.version }}, adding to scan script."
           echo -n "-version ${{ inputs.version }} " >> $HOME/pmd-scan.sh
         else
-          echo "\t - version has not been set, it will not be included in the scan."
+          echo " - version has not been set, it will not be included in the scan."
         fi
       shell: bash
 
