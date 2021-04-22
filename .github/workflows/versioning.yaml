@@ -1,4 +1,4 @@
-name: relase tag update workflow
+name: Keep the versions up-to-date
 
 on:
   release:
@@ -11,4 +11,3 @@ jobs:
       - uses: Actions-R-Us/actions-tagger@latest
         with:
           publish_latest_tag: true
-          
