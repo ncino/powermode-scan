@@ -1,0 +1,22 @@
+name: powermode-scan
+
+on:
+  pull_request:
+    branches: [ release ]
+
+jobs:
+  powermode-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: powermode-scan-pull-request
+        uses: ncino/powermode-scan@v1
+        with:
+          pmd-version: '6.33.0'
+          rulesets: '$GITHUB_WORKSPACE/.github/workflows/apexAndVisualForceRuleset.xml'
+          differential-scan: 'false'
+          failOnViolation: 'false'
+          dir: '$GITHUB_WORKSPACE'
