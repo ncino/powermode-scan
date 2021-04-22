@@ -1,14 +1,17 @@
-name: Packaging new merges to release
+name: Bump version
 
 on:
   push:
-    branches: [ release ]
+    branches:
+      - release
 
 jobs:
-  actions-tagger:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: zwaldowski/semver-release-action@v1
+      - uses: actions/checkout@master
+      - name: Bump version and push tag
+        uses: hennejg/github-tag-action@v4.2.4
         with:
-          bump: ${{ steps.bump.outputs.match }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: release
