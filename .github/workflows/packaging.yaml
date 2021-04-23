@@ -15,12 +15,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: release
-
-  actions-tagger:
-    needs: bump-version
-    runs-on: windows-latest
-    steps:
-      - uses: Actions-R-Us/actions-tagger@latest
-        with:
-          publish_latest_tag: true
-          
