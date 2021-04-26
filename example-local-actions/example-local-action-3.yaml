@@ -31,31 +31,31 @@ jobs:
           key: pmd-cache-${{ runner.os }}-${{ github.event.after }}
 
       # diff-file.csv is generated using a git diff command when the differential-scan input is set to true.
-      - name: powermode-scan-pull-request
+      - name: Powermode Scan on Pull Request
         uses: ncino/powermode-scan@v1
-        if: ${{ github.event_name == 'pull-request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         with:
-          pmd-version: '${{ secrets.PMD_VERSION }}'
+          pmd-version: '6.33.0'
           rulesets: '$GITHUB_WORKSPACE/.github/workflows/apexAndVisualForceRuleset.xml'
           differential-scan: 'true'
-          format: 'xml'
+          format: 'html'
           cache: 'pmd-cache'
-          failOnViolation: '${{ secrets.PMD_FAILONVIOLATION }}'
-          reportfile: './report.xml'
+          failOnViolation: 'false'
+          reportfile: './report.html'
           filelist: 'diff-file.csv'
 
       # This provides the option to scan the entire repo using the workflow dispatch button instead of a pull request.
-      - name: powermode-scan-workflow-dispatch
+      - name: Powermode Scan on Dispact Request
         uses: ncino/powermode-scan@v1
-        if: ${{ github.event_name != 'pull-request' }}
+        if: ${{ github.event_name != 'pull_request' }}
         with:
-          pmd-version: '${{ secrets.PMD_VERSION }}'
+          pmd-version: '6.33.0'
           rulesets: '$GITHUB_WORKSPACE/.github/workflows/apexAndVisualForceRuleset.xml'
           differential-scan: 'true'
-          format: 'xml'
+          format: 'html'
           cache: 'pmd-cache'
-          failOnViolation: '${{ secrets.PMD_FAILONVIOLATION }}'
-          reportfile: './report.xml'
+          failOnViolation: 'false'
+          reportfile: './report.html'
           dir: '$GITHUB_WORKSPACE'
 
       # Archives the PMD Scan Results to make them available for download.
@@ -65,13 +65,6 @@ jobs:
           name: pmd-scan-results
           path: ./report.xml
 
-      # Creates annotations on the action for easier review.
-      - name: Annotate with PMD Results
-        uses: jwgmeligmeyling/pmd-github-action@v1.2
-        with: 
-          name: PMD Scan Annotations
-          path: ./report.xml
-        
       # Posts a comment on the pull request
       - name: Comment on Pull Request
         if: ${{ github.event_name == 'pull_request' && steps.python-cache.outputs.cache-hit == false}}
