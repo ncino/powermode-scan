@@ -12,22 +12,6 @@ branding:
 ###  Inputs  ###
 ################
 inputs:
-  pmd-version:
-    description:    'Defines what version of PMD to download and run.'
-    required: true
-  
-  rulesets:
-    description:    'Comma-separated list of ruleset or rule references.  Some examples are available under 
-                    powermode-scan/pmd-rulesets.'
-    required: true
-  
-  differential-scan:
-    description:    'Run the scan on all files or only files changed in the pull request?  If set to true this will 
-                    ignore the scan-root-directory setting and use a generated diff file instead. This is separate from 
-                    PMDs differential scan capability which will speed up scanning but still evaluate the entire dir location.
-                    Setting this value to true will generate a list of files that were changed in the pull request and requires.'
-    required: true
-  
   auxclasspath: 
     description:    'Specifies the classpath for libraries used by the source code. This is used to resolve types in 
                     source files. The platform specific path delimiter (":" on Linux, ";" on Windows) is used to 
@@ -55,6 +39,14 @@ inputs:
     required: false
     default: 'false'
   
+  differential-scan:
+    description:    'Run the scan on all files or only files changed in the pull request?  If set to true this will 
+                    ignore the scan-root-directory setting and use a generated diff file instead. This is separate from 
+                    PMDs differential scan capability which will speed up scanning but still evaluate the entire dir location.
+                    Setting this value to true will generate a list of files that were changed in the pull request and requires.'
+    required: false
+    default: 'false'
+
   dir:
     description:    'Required Root directory for the analyzed sources.'
     required: false
@@ -119,11 +111,22 @@ inputs:
     required: false
     default: 'false'
   
+  pmd-version:
+    description:    'Defines what version of PMD to download and run.'
+    required: false
+    default: '6.33.0'
+
   reportfile:
     description:    'Path to a file in which the report output will be sent. By default the report is printed on 
                     standard output.'
     required: false
     default: 'false'
+
+  rulesets:
+    description:    'Comma-separated list of ruleset or rule references.  Some examples are available under 
+                    powermode-scan/pmd-rulesets.'
+    required: false
+    default: '${{ github.action_path }}/pmd-rulesets/apexAndVisualForceRuleset.xml'
   
   shortnames:
     description:    'Prints shortened filenames in the report.'

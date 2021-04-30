@@ -9,8 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      # Checking out commit before used in generating diff file.
       - name: Checkout Repository
         uses: actions/checkout@v2
+        with:
+          ref: '${{ github.event.before }}'
+
+      # Checking out commit after PR used in generating diff file.
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          ref: '${{ github.event.after }}'
 
       - name: powermode-scan-pull-request
         uses: ncino/powermode-scan@v1
