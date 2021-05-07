@@ -186,6 +186,8 @@ runs:
     - id: generate-differential-filelist
       run: |
         echo "::group::Generate List of Changed Files"
+        echo "Github Event Before: ${{ github.event.before }}"
+        echo "Github Event After: ${{ github.event.after }}"
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
           git diff --name-only ${{ github.event.before }}..${{ github.event.after }}| paste -s -d "," >> diff-file.csv
