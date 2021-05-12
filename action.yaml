@@ -195,9 +195,7 @@ runs:
         echo "github.head_ref: ${{ github.head_ref }}"
         pwd
         echo ${{ github.action_path }}
-        ls /__w/_actions/ncino/powermode-scan/v1/
-        ls /__w/_actions/powermode-scan/v1/
-        echo ${{ github.action_path }}
+        echo ${{ inputs.rulesets }}
 
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
