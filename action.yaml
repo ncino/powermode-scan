@@ -122,11 +122,14 @@ inputs:
     required: false
     default: 'false'
 
+  # There seems to be a bug related to using ${{ github.action_path }} in the inputs. When echoing the value during 
+  # step execution it prints '/home/runner/work/_actions/ncino/powermode-scan/v1/' but when setting the input default
+  # it doesn't print anything. Using the full path to set the default here as a workaround.
   rulesets:
     description:    'Comma-separated list of ruleset or rule references.  Some examples are available under 
                     powermode-scan/pmd-rulesets.'
     required: false
-    default: '${{ github.action_path }}/pmd-rulesets/apexAndVisualForceRuleset.xml'
+    default: '/home/runner/work/_actions/ncino/powermode-scan/v1/pmd-rulesets/apexAndVisualForceRuleset.xml'
   
   shortnames:
     description:    'Prints shortened filenames in the report.'
@@ -196,6 +199,11 @@ runs:
         pwd
         echo ${{ github.action_path }}
         echo ${{ inputs.rulesets }}
+
+  /home/runner/work/force-LLC_BI/force-LLC_BI
+  /home/runner/work/_actions/ncino/powermode-scan/v1
+  /pmd-rulesets/apexAndVisualForceRuleset.xml
+
 
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
