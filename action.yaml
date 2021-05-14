@@ -33,6 +33,18 @@ inputs:
                     up-to-date rule violations. This can greatly improve analysis performance and is highly recommended.'
     required: false
     default: 'false'
+
+  commit-before:
+    description:    'Sometimes the github event commit IDs are not present in the payload passed to this action. This 
+                    fields provide a workaround for this bug. Pass the ${{ github.event.before }} value to this parameter.'
+    required: false
+    default: '${{ github.event.before }}'
+
+  commit-after: 
+    description:    'Sometimes the github event commit IDs are not present in the payload passed to this action. This 
+                    fields provide a workaround for this bug. Pass the ${{ github.event.after }} value to this parameter.'
+    required: false
+    default: '${{ github.event.after }}'
   
   debug:
     description:    'Debug mode. Prints more log output.'
@@ -199,7 +211,7 @@ runs:
 
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
-          git diff --name-only --diff-filter=ACdMRTuxb {{ github.base_ref }}..${{ github.head_ref }}| paste -s -d "," >> diff-file.csv
+          git diff --name-only --diff-filter=ACdMRTuxb ${{ inputs.commit-before }}..${{ inputs.commit-after }}| paste -s -d "," >> diff-file.csv
           echo "###### diff-file.csv #######"
           cat diff-file.csv
           echo "############################"
