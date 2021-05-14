@@ -199,7 +199,7 @@ runs:
 
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
-          git diff --name-only --diff-filter=d {{ github.base_ref }}..${{ github.head_ref }}| paste -s -d "," >> diff-file.csv
+          git diff --name-only --diff-filter=ACdMRTuxb {{ github.base_ref }}..${{ github.head_ref }}| paste -s -d "," >> diff-file.csv
           echo "###### diff-file.csv #######"
           cat diff-file.csv
           echo "############################"
