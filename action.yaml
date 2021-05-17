@@ -33,16 +33,6 @@ inputs:
                     up-to-date rule violations. This can greatly improve analysis performance and is highly recommended.'
     required: false
     default: 'false'
-
-  commit-before:
-    description:    'Sometimes the github event commit IDs are not present in the payload passed to this action. This 
-                    fields provide a workaround for this bug. Pass the github.event.before value to this parameter.'
-    required: false
-
-  commit-after: 
-    description:    'Sometimes the github event commit IDs are not present in the payload passed to this action. This 
-                    fields provide a workaround for this bug. Pass the github.event.after value to this parameter.'
-    required: false
   
   debug:
     description:    'Debug mode. Prints more log output.'
@@ -198,20 +188,13 @@ runs:
     # Generate list of changed files when differential scan is set to true.
     - id: generate-differential-filelist
       run: |
-        echo "::group::Generate List of Changed Files"
-        
-        echo "Github Event Before: ${{ github.event.before }}"
-        echo "Github Event After: ${{ github.event.after }}"
+        echo "::group::Generate List of Changed Files"      
         echo "github.event.pull_request.head.sha: ${{ github.event.pull_request.head.sha }}"
-        echo "github.sha: ${{ github.sha }}"
         echo "github.base_ref: ${{ github.base_ref }}"
-        echo "github.head_ref: ${{ github.head_ref }}"
-        echo "Input commit before: ${{ inputs.commit-before }}"
-        echo "Input commit after: ${{ inputs.commit-after }}"
 
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
-          git diff --name-only --diff-filter=ACdMRTuxb ${{ inputs.commit-before }}..${{ inputs.commit-after }}| paste -s -d "," >> diff-file.csv
+          git diff --name-only --diff-filter=ACdMRTuxb ${{ github.base_ref }}..${{ github.event.pull_request.head.sha }}| paste -s -d "," >> diff-file.csv
           echo "###### diff-file.csv #######"
           cat diff-file.csv
           echo "############################"
