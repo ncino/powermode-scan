@@ -34,6 +34,17 @@ inputs:
     required: false
     default: 'false'
   
+  curlCompareURL: 
+    description:    'URL used in building the list of changed files. Defaults to the name of the repository.'
+    required: false
+    default: 'https://api.github.com/repos/${{ github.repository }}/compare/${{ github.base_ref }}...${{ github.event.pull_request.head.sha }}'
+
+  curlAuthHeader:
+    description:    'Auth token used to access the github api with curl command. Used in building the list of differential files.
+                    This must be passed by the local action when building a differential file.'
+    required: false
+    default: 'false'
+
   debug:
     description:    'Debug mode. Prints more log output.'
     required: false
@@ -191,11 +202,12 @@ runs:
         echo "::group::Generate List of Changed Files"      
         echo "github.event.pull_request.head.sha: ${{ github.event.pull_request.head.sha }}"
         echo "github.base_ref: ${{ github.base_ref }}"
-        compare_url="https://api.github.com/repos/${{ github.repository }}/compare/${{ github.base_ref }}...${{ github.event.pull_request.head.sha }}"
-        auth_header="Authorization: Bearer ${{ secrets.DEVOPS_GITHUB_TOKEN }}"
+        echo "curlCompareURL: ${{ inputs.curlCompareURL }}"
+        echo "curlAuthHeader: ${{ inputs.curlAuthHeader }}"
+        
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
-          curl -s -X GET "$compare_url" -H "$auth_header" | jq -r '.files | map(.filename) | join(",")' >> diff-file.csv
+          curl -s -X GET "${{ inputs.curlCompareURL }}" -H "${{ inputs.curlAuthHeader }}" | jq -r '.files | map(.filename) | join(",")' >> diff-file.csv
           echo "###### diff-file.csv #######"
           cat diff-file.csv
           echo "############################"
