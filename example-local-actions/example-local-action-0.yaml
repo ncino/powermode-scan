@@ -3,11 +3,7 @@ name: powermode-scan
 on:
   pull_request:
     branches: 
-      - release 
-      - master
-    types:
-      -ready_for_review
-      -review_requested
+      - release
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -17,16 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checking out commit before used in generating diff file.
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
-          ref: '${{ github.event.before }}'
-
-      # Checking out commit after PR used in generating diff file.
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-        with:
-          ref: '${{ github.event.after }}'
+          ref: ${{ github.event.pull_request.head.sha }}
 
       # Used in speeding up runs in multiple pull requests.
       - name: Load Cached Scan Runs
@@ -47,6 +36,7 @@ jobs:
           failOnViolation: '${{ secrets.PMD_FAIL_ON_VIOLATION }}'
           reportfile: './report.xml'
           filelist: 'diff-file.csv'
+          curlAuthHeader: 'Authorization: Bearer ${{ secrets.DEVOPS_GITHUB_TOKEN }}'
 
       # This provides the option to scan the entire repo using the workflow dispatch button instead of a pull request.
       - name: Powermode Scan on Dispatch Request
@@ -54,7 +44,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         with:
           pmd-version: '${{ secrets.PMD_VERSION }}'
-          differential-scan: 'true'
+          differential-scan: 'false'
           format: 'xml'
           cache: 'pmd-cache'
           failOnViolation: '${{ secrets.PMD_FAIL_ON_VIOLATION }}'

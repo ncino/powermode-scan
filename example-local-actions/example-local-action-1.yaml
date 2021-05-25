@@ -2,7 +2,9 @@ name: powermode-scan
 
 on:
   pull_request:
-    branches: [ release, master ]
+    branches: 
+      - release
+      - master
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -12,16 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checking out commit before used in generating diff file.
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
-          ref: '${{ github.event.before }}'
-
-      # Checking out commit after PR used in generating diff file.
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-        with:
-          ref: '${{ github.event.after }}'
+          ref: ${{ github.event.pull_request.head.sha }}
 
       # Used in speeding up runs in multiple pull requests.
       - name: Load Cached Scan Runs
@@ -36,13 +31,14 @@ jobs:
         if: ${{ github.event_name == 'pull-request' }}
         with:
           pmd-version: '${{ secrets.PMD_VERSION }}'
-          rulesets: '$GITHUB_WORKSPACE/.github/workflows/apexAndVisualForceRuleset.xml'
           differential-scan: 'true'
           format: 'xml'
           cache: 'pmd-cache'
-          failOnViolation: '${{ secrets.PMD_FAILONVIOLATION }}'
+          failOnViolation: '${{ secrets.PMD_FAIL_ON_VIOLATION }}'
           reportfile: './report.xml'
           filelist: 'diff-file.csv'
+          curlAuthHeader: 'Authorization: Bearer ${{ secrets.DEVOPS_GITHUB_TOKEN }}'
+          rulesets: '$GITHUB_WORKSPACE/.github/workflows/apexAndVisualForceRuleset.xml'
 
       # This provides the option to scan the entire repo using the workflow dispatch button instead of a pull request.
       - name: powermode-scan-workflow-dispatch
@@ -74,9 +70,11 @@ jobs:
         
       # Posts a comment on the pull request
       - name: Comment on Pull Request
-        if: ${{ github.event_name == 'pull_request' && steps.python-cache.outputs.cache-hit == false}}
-        uses: thollander/actions-comment-pull-request@master
-        with:
-          message: 'Open the powermode-scan details under the Pull Request checks and check the PMD Scan Annotations or 
-                    uploaded scan artifact for information on PMD violations.'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ github.event_name == 'pull_request' && steps.python-cache.outputs.cache-hit == 'false'}}
+        shell: bash
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ env.GITHUB_REPOSITORY }}/issues/${{ github.event.issue.number }}/comments \
+          -d '{"body": "🐍 Open the PMD Scan Annotations check details to view any PMD violations. 🐍"}'

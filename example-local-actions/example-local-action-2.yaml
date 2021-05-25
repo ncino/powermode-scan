@@ -2,7 +2,8 @@ name: powermode-scan
 
 on:
   pull_request:
-    branches: [ release ]
+    branches:
+      - release
 
 jobs:
   powermode-scan:
@@ -10,16 +11,9 @@ jobs:
     
     steps:
       # Checking out commit before used in generating diff file.
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
-          ref: '${{ github.event.before }}'
-
-      # Checking out commit after PR used in generating diff file.
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-        with:
-          ref: '${{ github.event.after }}'
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: powermode-scan-pull-request
         uses: ncino/powermode-scan@v1
@@ -29,3 +23,4 @@ jobs:
           differential-scan: 'false'
           failOnViolation: 'false'
           dir: '$GITHUB_WORKSPACE'
+
