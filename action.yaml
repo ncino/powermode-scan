@@ -197,17 +197,20 @@ runs:
       shell: bash
 
     # Generate list of changed files when differential scan is set to true.
+    # Connects to the github event api to get a list of changed files in JSON format.
+    # Then uses jq to process the JSON to remove deleted files and build a csv file.
     - id: generate-differential-filelist
       run: |
         echo "::group::Generate List of Changed Files"      
         echo "github.event.pull_request.head.sha: ${{ github.event.pull_request.head.sha }}"
         echo "github.base_ref: ${{ github.base_ref }}"
         echo "curlCompareURL: ${{ inputs.curlCompareURL }}"
-        echo "curlAuthHeader: ${{ inputs.curlAuthHeader }}"
         
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
-          curl -s -X GET "${{ inputs.curlCompareURL }}" -H "${{ inputs.curlAuthHeader }}" | jq -r '.files | map(.filename) | join(",")' >> diff-file.csv
+          curl -s -X GET "${{ inputs.curlCompareURL }}" -H "${{ inputs.curlAuthHeader }}" \
+          | jq -r '[.files[] | select( .status != "removed") | .filename] | @csv' \
+          > diff-file.csv
           echo "###### diff-file.csv #######"
           cat diff-file.csv
           echo "############################"
