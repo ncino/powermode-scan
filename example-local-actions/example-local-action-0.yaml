@@ -1,12 +1,9 @@
 name: powermode-scan
 
 on:
-  pull_request:
-    branches: 
-      - release
-
+  - pull_request
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  - workflow_dispatch
 
 jobs:
   powermode-scan:
