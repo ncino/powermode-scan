@@ -184,6 +184,14 @@ runs:
   using: "composite"
   steps:
 
+    - id: file-locations
+      run: |
+        echo "::group::testing "
+        pwd
+        ls -lrt
+        echo "::endgroup::"
+      shell: bash
+
     # Download and Unzip PMD 
     # Access PMD's run script with this location: pmd-bin-${{ inputs.pmd-version }}/bin/run.sh
     - id: install-pmd
