@@ -189,9 +189,10 @@ runs:
     - id: install-pmd
       run: |
         echo "::group::Downloading PMD version ${{ inputs.pmd-version }} "
-        wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${{ inputs.pmd-version }}"/pmd-bin-"${{ inputs.pmd-version }}".zip
+        curl https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${{ inputs.pmd-version }}"/pmd-bin-"${{ inputs.pmd-version }}".zip
         echo "::endgroup::"
         echo "::group::Unzipping downloaded PMD zip"
+        echo "::you're on cheyenne's branch now"
         unzip pmd-bin-"${{ inputs.pmd-version }}".zip
         echo "::endgroup::"
       shell: bash
