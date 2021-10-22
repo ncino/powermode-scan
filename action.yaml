@@ -188,7 +188,7 @@ runs:
       run: |
         echo "::group::testing "
         pwd
-        ls -lrt /Users/runner/work
+        ls -lrt /Users/runner/work/_actions/
         echo "::endgroup::"
       shell: bash
 
