@@ -234,6 +234,7 @@ runs:
             -failOnViolation ${{ inputs.failOnViolation }} \
             -minimumpriority ${{ inputs.minimumpriority }} \
             -suppressmarker ${{ inputs.suppressmarker }} \
+            -debug \
             -threads ${{ inputs.threads }} " > $HOME/pmd-scan.sh
         echo "pmd-scan initialized with these base values:"
         cat $HOME/pmd-scan.sh 
