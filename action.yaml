@@ -234,7 +234,6 @@ runs:
             -failOnViolation ${{ inputs.failOnViolation }} \
             -minimumpriority ${{ inputs.minimumpriority }} \
             -suppressmarker ${{ inputs.suppressmarker }} \
-            -debug \
             -threads ${{ inputs.threads }} " > $HOME/pmd-scan.sh
         echo "pmd-scan initialized with these base values:"
         cat $HOME/pmd-scan.sh 
@@ -283,15 +282,15 @@ runs:
         fi
       shell: bash
 
-    # - id: check-filelist
-    #   run: |
-    #     if [[ "${{ inputs.filelist }}" != 'false' ]]; then
-    #       echo " + filelist has been set to ${{ inputs.filelist }}, adding to scan script."
-    #       echo -n "-filelist ${{ inputs.filelist }} " >> $HOME/pmd-scan.sh
-    #     else
-    #       echo " - filelist has not been set, it will not be included in the scan."
-    #     fi
-    #   shell: bash
+    - id: check-filelist
+      run: |
+        if [[ "${{ inputs.filelist }}" != 'false' ]]; then
+          echo " + filelist has been set to ${{ inputs.filelist }}, adding to scan script."
+          echo -n "-filelist ${{ inputs.filelist }} " >> $HOME/pmd-scan.sh
+        else
+          echo " - filelist has not been set, it will not be included in the scan."
+        fi
+      shell: bash
 
     - id: check-ignorelist
       run: |
