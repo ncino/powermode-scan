@@ -214,7 +214,7 @@ runs:
           > diff-file.csv
           echo "###### diff-file.csv #######"
           cat diff-file.csv
-          echo "############################"
+          echo "end diff-file.csv ############################"
         else
           echo "Differential scan is set to false, a diff of changed files will not be generated."
         fi
