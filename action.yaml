@@ -421,6 +421,7 @@ runs:
     - id: run-pmd-scan
       run: |
         echo "::group::Run PMD Scan Script"
+        cat $HOME/pmd-scan.sh
         chmod +x $HOME/pmd-scan.sh
         sh $HOME/pmd-scan.sh 
         echo "::endgroup::"
