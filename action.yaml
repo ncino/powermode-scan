@@ -214,6 +214,8 @@ runs:
           > diff-file.csv
           echo "###### diff-file.csv #######"
           cat diff-file.csv
+          awk '{f="diff-file-" NR; print $0 ","> f}' RS=','  diff-file.csv
+          ls -lrt
           echo "end diff-file.csv ############################"
         else
           echo "Differential scan is set to false, a diff of changed files will not be generated."
