@@ -288,7 +288,7 @@ runs:
       run: |
         if [[ "${{ inputs.filelist }}" != 'false' ]]; then
           echo " + filelist has been set to ${{ inputs.filelist }}, adding to scan script."
-          echo -n "-filelist ${filelist} " >> $HOME/pmd-scan.sh
+          echo -n "-filelist ${{ inputs.filelist }} " >> $HOME/pmd-scan.sh
         else
           echo " - filelist has not been set, it will not be included in the scan."
         fi
