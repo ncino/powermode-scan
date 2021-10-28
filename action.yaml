@@ -140,7 +140,7 @@ inputs:
     description:    'Comma-separated list of ruleset or rule references.  Some examples are available under 
                     powermode-scan/pmd-rulesets.'
     required: false
-    default: '/Users/runner/work/_actions/ncino/powermode-scan/v1/pmd-rulesets/apexAndVisualForceRuleset.xml'
+    default: '/home/runner/work/_actions/ncino/powermode-scan/v1/pmd-rulesets/apexAndVisualForceRuleset.xml'
   
   shortnames:
     description:    'Prints shortened filenames in the report.'
@@ -189,7 +189,7 @@ runs:
     - id: install-pmd
       run: |
         echo "::group::Downloading PMD version ${{ inputs.pmd-version }} "
-        curl -OL https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${{ inputs.pmd-version }}"/pmd-bin-"${{ inputs.pmd-version }}".zip
+        wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${{ inputs.pmd-version }}"/pmd-bin-"${{ inputs.pmd-version }}".zip
         echo "::endgroup::"
         echo "::group::Unzipping downloaded PMD zip"
         echo "::you're on cheyenne's branch now"
@@ -213,7 +213,7 @@ runs:
           | jq -r '[.files[] | select( .status != "removed") | .filename] | join(",")' \
           > diff-file.csv
           echo "###### diff-file.csv #######"
-          echo " ############################"
+          echo "############################"
         else
           echo "Differential scan is set to false, a diff of changed files will not be generated."
         fi
@@ -418,7 +418,7 @@ runs:
       uses: actions/setup-java@v2
       with:
         distribution: 'adopt'
-        java-version: '17'
+        java-version: '11'
 
     # Run PMD Scan
     - id: run-pmd-scan
