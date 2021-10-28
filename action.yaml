@@ -192,7 +192,6 @@ runs:
         wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F"${{ inputs.pmd-version }}"/pmd-bin-"${{ inputs.pmd-version }}".zip
         echo "::endgroup::"
         echo "::group::Unzipping downloaded PMD zip"
-        echo "::you're on cheyenne's branch now"
         unzip pmd-bin-"${{ inputs.pmd-version }}".zip
         echo "::endgroup::"
       shell: bash
@@ -213,6 +212,7 @@ runs:
           | jq -r '[.files[] | select( .status != "removed") | .filename] | join(",")' \
           > diff-file.csv
           echo "###### diff-file.csv #######"
+          cat diff-file.csv
           echo "############################"
         else
           echo "Differential scan is set to false, a diff of changed files will not be generated."
@@ -423,9 +423,7 @@ runs:
     # Run PMD Scan
     - id: run-pmd-scan
       run: |
-        java --version
         echo "::group::Run PMD Scan Script"
-        cat $HOME/pmd-scan.sh
         chmod +x $HOME/pmd-scan.sh
         sh $HOME/pmd-scan.sh 
         echo "::endgroup::"
