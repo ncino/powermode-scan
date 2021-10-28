@@ -414,9 +414,15 @@ runs:
     - run: echo "::endgroup::"
       shell: bash
 
+    - id: setup-java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+
     # Run PMD Scan
     - id: run-pmd-scan
       run: |
+        java --version
         echo "::group::Run PMD Scan Script"
         cat $HOME/pmd-scan.sh
         chmod +x $HOME/pmd-scan.sh
