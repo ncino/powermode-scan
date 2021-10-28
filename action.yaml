@@ -417,6 +417,7 @@ runs:
     - id: setup-java
       uses: actions/setup-java@v2
       with:
+        distribution: 'zulu'
         java-version: '11'
 
     # Run PMD Scan
