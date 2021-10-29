@@ -291,6 +291,16 @@ runs:
         fi
       shell: bash
 
+    - id: check-dir
+      run: |
+        if [[ "${{ inputs.dir }}" != 'false' ]]; then
+          echo " + dir has been set to ${{ inputs.dir }}, adding to scan script."
+          echo -n "-dir ${{ inputs.dir }} " >> $HOME/pmd-scan.sh
+        else
+          echo " - dir has not been set, it will not be included in the scan."
+        fi
+      shell: bash
+
     - id: check-ignorelist
       run: |
         if [[ "${{ inputs.ignorelist }}" != 'false' ]]; then
@@ -403,6 +413,12 @@ runs:
 
     - run: echo "::endgroup::"
       shell: bash
+
+    - id: setup-java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
 
     # Run PMD Scan
     - id: run-pmd-scan
