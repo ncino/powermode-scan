@@ -420,7 +420,7 @@ runs:
         distribution: 'adopt'
         java-version: '11'
 
-    # Run PMD Scan
+    # Run PMD Scan 
     - id: run-pmd-scan
       run: |
         echo "::group::Run PMD Scan Script"
