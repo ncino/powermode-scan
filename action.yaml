@@ -424,6 +424,7 @@ runs:
     - id: run-pmd-scan
       run: |
         echo "::group::Run PMD Scan Script"
+        echo "You're on the test branch"
         chmod +x $HOME/pmd-scan.sh
         sh $HOME/pmd-scan.sh || EXIT_CODE=$?
         if [[ $EXIT_CODE -ne 0 ]]; then
