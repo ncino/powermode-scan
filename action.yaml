@@ -224,8 +224,8 @@ runs:
       run: |
         echo "current dir"
         pwd
-        echo "more dirs"
-        ls -lrt
+        echo "action dir"
+        ls -lrt /home/runner/work/_actions
       shell: bash
 
     # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
