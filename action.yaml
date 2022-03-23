@@ -222,8 +222,8 @@ runs:
 
     - id: check-path
       run: |
-        echo "current dir"
-        pwd
+        echo "upper dir"
+        ls -lrt /home/runner/work/_actions
         echo "action dir"
         ls -lrt /home/runner/work/_actions/actions
       shell: bash
