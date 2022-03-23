@@ -226,6 +226,7 @@ runs:
         pwd
         echo "more dirs"
         ls -lrt
+      shell: bash
 
     # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
     # conditional tests.  If the conditional passes the argument is added to the scan script file.
