@@ -225,7 +225,7 @@ runs:
         echo "upper dir"
         ls -lrt /home/runner/work/_actions
         echo "action dir"
-        ls -lrt /home/runner/work/_actions/ncino
+        ls -lrt /home/runner/work/_actions/ncino/powermode-scan
       shell: bash
 
     # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
