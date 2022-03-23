@@ -425,6 +425,10 @@ runs:
       run: |
         echo "::group::Run PMD Scan Script"
         chmod +x $HOME/pmd-scan.sh
-        sh $HOME/pmd-scan.sh 
+        sh $HOME/pmd-scan.sh || EXIT_CODE=$?
+        if [[ $EXIT_CODE -ne 0 ]]; then
+          echo "Exit Code: $EXIT_CODE"
+          touch /tmp/build_failed.txt; 
+        fi;
         echo "::endgroup::"
       shell: bash
