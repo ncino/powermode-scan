@@ -140,7 +140,7 @@ inputs:
     description:    'Comma-separated list of ruleset or rule references.  Some examples are available under 
                     powermode-scan/pmd-rulesets.'
     required: false
-    default: '/home/runner/work/_actions/ncino/powermode-scan/v1/pmd-rulesets/apexSecurityRuleSet.xml'
+    default: '/home/runner/work/_actions/ncino/powermode-scan/pmd-rulesets/apexSecurityRuleSet.xml'
   
   shortnames:
     description:    'Prints shortened filenames in the report.'
