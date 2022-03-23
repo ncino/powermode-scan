@@ -220,6 +220,13 @@ runs:
         echo "::endgroup::"
       shell: bash
 
+    - id: check-dir
+    - run: |
+        echo "current dir"
+        pwd
+        echo "more dirs"
+        ls -lrt
+
     # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
     # conditional tests.  If the conditional passes the argument is added to the scan script file.
     - id: initialize-scan
