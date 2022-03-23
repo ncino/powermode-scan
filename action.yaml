@@ -220,7 +220,7 @@ runs:
         echo "::endgroup::"
       shell: bash
 
-    - id: check-dir
+    - id: check-path
       run: |
         echo "current dir"
         pwd
