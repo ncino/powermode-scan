@@ -221,7 +221,7 @@ runs:
       shell: bash
 
     - id: check-dir
-    - run: |
+      run: |
         echo "current dir"
         pwd
         echo "more dirs"
