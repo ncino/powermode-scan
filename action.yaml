@@ -92,7 +92,7 @@ inputs:
     description:    'Path to file containing a comma delimited list of files to ignore. This option can be combined 
                     with -dir and -filelist. This ignore list takes precedence over any files in the filelist.'
     required: false
-    default: 'false'
+    default: '/home/runner/work/_actions/ncino/powermode-scan/DO-1531/resources/ignorelist.csv'
   
   help:
     description:    'Display help on usage.'
