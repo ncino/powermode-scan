@@ -92,7 +92,7 @@ inputs:
     description:    'Path to file containing a comma delimited list of files to ignore. This option can be combined 
                     with -dir and -filelist. This ignore list takes precedence over any files in the filelist.'
     required: false
-    default: 'false'
+    default: '/home/runner/work/_actions/ncino/powermode-scan/v1/resources/ignorelist.csv'
   
   help:
     description:    'Display help on usage.'
@@ -140,7 +140,7 @@ inputs:
     description:    'Comma-separated list of ruleset or rule references.  Some examples are available under 
                     powermode-scan/pmd-rulesets.'
     required: false
-    default: '/home/runner/work/_actions/ncino/powermode-scan/v1/pmd-rulesets/apexSecurityRuleSet.xml'
+    default: '/home/runner/work/_actions/ncino/powermode-scan/v1/pmd-rulesets/apexSecurityRuleSet.xml' 
   
   shortnames:
     description:    'Prints shortened filenames in the report.'
@@ -425,6 +425,10 @@ runs:
       run: |
         echo "::group::Run PMD Scan Script"
         chmod +x $HOME/pmd-scan.sh
-        sh $HOME/pmd-scan.sh 
+        sh $HOME/pmd-scan.sh || EXIT_CODE=$?
+        if [[ $EXIT_CODE -ne 0 ]]; then
+          echo "Exit Code: $EXIT_CODE"
+          touch /tmp/build_failed.txt; 
+        fi;
         echo "::endgroup::"
       shell: bash
