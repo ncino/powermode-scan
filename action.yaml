@@ -220,14 +220,6 @@ runs:
         echo "::endgroup::"
       shell: bash
 
-    - id: check-path
-      run: |
-        echo "upper dir"
-        ls -lrt /home/runner/work/_actions
-        echo "action dir"
-        ls -lrt /home/runner/work/_actions/ncino/powermode-scan
-      shell: bash
-
     # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
     # conditional tests.  If the conditional passes the argument is added to the scan script file.
     - id: initialize-scan
