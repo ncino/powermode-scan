@@ -206,6 +206,9 @@ runs:
         echo "github.base_ref: ${{ github.base_ref }}"
         echo "curlCompareURL: ${{ inputs.curlCompareURL }}"
         echo "On Cheyenne's test branch"
+        curl -s -X GET "${{ inputs.curlCompareURL }}" -H "${{ inputs.curlAuthHeader }}" >> output.json
+        echo "Output from curl command"
+        cat output.json
         
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
