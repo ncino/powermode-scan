@@ -205,6 +205,7 @@ runs:
         echo "github.event.pull_request.head.sha: ${{ github.event.pull_request.head.sha }}"
         echo "github.base_ref: ${{ github.base_ref }}"
         echo "curlCompareURL: ${{ inputs.curlCompareURL }}"
+        echo "On Cheyenne's test branch"
         
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
