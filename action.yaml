@@ -210,11 +210,23 @@ runs:
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
           curl -s -X GET "${{ inputs.curlCompareURL }}" -H "${{ inputs.curlAuthHeader }}" \
-          | jq -r '[.files[] | select( (.status != "removed") and ( .filename | contains("json") | not) ) | .filename] | join(",")' \
-          > diff-file.csv
-          echo "###### diff-file.csv #######"
-          cat diff-file.csv
+          | jq -r '[.files[] | select( (.status != "removed") ) | .filename] | join(",")' \
+          > unprocessed-file.csv
+          echo "###### unprocessed-file.csv #######"
+          cat unprocessed-file.csv
           echo "############################"
+          unprocessed_list=`cat unprocessed-file.csv`
+          processed_list=''
+          for i in ${unprocessed_list//,/ }
+          do
+              if [[ $i == *".json"* ]] || [[ $i == *"yml"* ]] || [[ $i == *"md"* ]] || [[ $i == *"prettier"* ]] || [[ $i == *"ignore"* ]]; then
+                  echo "excluding ${i} from diff-file list"
+              else
+                  processed_list="${i}",${processed_list}
+              fi
+          done
+          echo $processed_list > diff-list.csv
+          cat diff-list.csv
         else
           echo "Differential scan is set to false, a diff of changed files will not be generated."
         fi
