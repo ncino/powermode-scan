@@ -199,6 +199,8 @@ runs:
     # Generate list of changed files when differential scan is set to true.
     # Connects to the github event api to get a list of changed files in JSON format.
     # Then uses jq to process the JSON to remove deleted files and build a csv file.
+    # Then loops through the csv file & removes any files that contain json since PMD can't scan them
+    # Finally uses sed to remove trailing commas from the diff-file.csv
     - id: generate-differential-filelist
       run: |
         echo "::group::Generate List of Changed Files"      
