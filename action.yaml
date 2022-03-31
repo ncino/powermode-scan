@@ -226,6 +226,7 @@ runs:
               fi
           done
           echo $processed_list > diff-list.csv
+          sed -i -e 's/.$//' diff-list.csv
           cat diff-list.csv
         else
           echo "Differential scan is set to false, a diff of changed files will not be generated."
