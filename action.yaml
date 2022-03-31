@@ -210,7 +210,7 @@ runs:
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
           curl -s -X GET "${{ inputs.curlCompareURL }}" -H "${{ inputs.curlAuthHeader }}" \
-          | jq -r '[.files[] | select( (.status != "removed") and ( .filename | contains(\"json\" | not)) ) | .filename] | join(",")' \
+          | jq -r '[.files[] | select( (.status != "removed") and ( .filename | contains(\"json\") | not) ) | .filename] | join(",")' \
           > diff-file.csv
           echo "###### diff-file.csv #######"
           cat diff-file.csv
