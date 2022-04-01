@@ -182,8 +182,8 @@ inputs:
 #########################
 runs:
   using: "composite"
-  outputs:
-    continue-scan: ${{ steps.generate-differential-filelist.outputs.continue-scan }}
+  # outputs:
+  #   continue-scan: ${{ steps.generate-differential-filelist.outputs.continue-scan }}
   steps:
 
     # Download and Unzip PMD 
