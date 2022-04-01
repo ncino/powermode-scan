@@ -218,7 +218,8 @@ runs:
           echo "############################"
           unprocessed_list=`cat unprocessed-file.csv`
           processed_list=''
-          for i in ${unprocessed_list//,/ }
+          IFS=, read -a Array <<<"$unprocessed_list"
+          for i in "${Array[@]}"
           do
               if [[ $i == *".json"* ]] || [[ $i == *"yml"* ]] || [[ $i == *"md"* ]] || [[ $i == *"prettier"* ]] || [[ $i == *".png"* ]] || [[ $i == *"ignore"* ]]; then
                   echo "excluding ${i} from diff-file list"
