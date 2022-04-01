@@ -220,7 +220,7 @@ runs:
           processed_list=''
           for i in ${unprocessed_list//,/ }
           do
-              if [[ $i == *".json"* ]] || [[ $i == *"yml"* ]] || [[ $i == *"md"* ]] || [[ $i == *"prettier"* ]] || [[ $i == *"ignore"* ]]; then
+              if [[ $i == *".json"* ]] || [[ $i == *"yml"* ]] || [[ $i == *"md"* ]] || [[ $i == *"prettier"* ]] || [[ $i == *".png"* ]] || [[ $i == *"ignore"* ]]; then
                   echo "excluding ${i} from diff-file list"
               else
                   processed_list="${i}",${processed_list}
