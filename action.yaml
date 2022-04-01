@@ -247,7 +247,7 @@ runs:
     # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
     # conditional tests.  If the conditional passes the argument is added to the scan script file.
     - id: initialize-scan
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         echo "::group::Build PMD Scan Script"
         echo "Start Building Scan Script"
@@ -264,11 +264,11 @@ runs:
       shell: bash
 
     - run: echo "Checking inputs that have been set to include in scan command script."
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       shell: bash
 
     - id: check-auxclasspath
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.auxclasspath }}" != 'false' ]]; then
           echo " + auxclasspath has been set to ${{ inputs.auxclasspath }}, adding to scan script."
@@ -279,7 +279,7 @@ runs:
       shell: bash
 
     - id: check-benchmark
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.benchmark }}" == 'true' ]]; then
           echo " + benchmark has been set to ${{ inputs.benchmark }}, adding to scan script."
@@ -290,7 +290,7 @@ runs:
       shell: bash
 
     - id: check-cache
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.use-cache }}" != 'false' ]]; then
           echo " + cache has been set to ${{ inputs.cache }}, adding to scan script."
@@ -301,7 +301,7 @@ runs:
       shell: bash
 
     - id: check-debug
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.debug  }}" == 'true' ]]; then
           echo " + debug has been set to ${{ inputs.debug }}, adding to scan script."
@@ -312,7 +312,7 @@ runs:
       shell: bash
 
     - id: check-filelist
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.filelist }}" != 'false' ]]; then
           echo " + filelist has been set to ${{ inputs.filelist }}, adding to scan script."
@@ -323,7 +323,7 @@ runs:
       shell: bash
 
     - id: check-dir
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.dir }}" != 'false' ]]; then
           echo " + dir has been set to ${{ inputs.dir }}, adding to scan script."
@@ -334,7 +334,7 @@ runs:
       shell: bash
 
     - id: check-ignorelist
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.ignorelist }}" != 'false' ]]; then
           echo " + ignorelist has been set to ${{ inputs.ignorelist }}, adding to scan script."
@@ -345,7 +345,7 @@ runs:
       shell: bash
 
     - id: check-help
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.help }}" == 'true' ]]; then
           echo " + help has been set to ${{ inputs.help }}, adding to scan script."
@@ -356,7 +356,7 @@ runs:
       shell: bash
 
     - id: check-language
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.language }}" != 'false' ]]; then
           echo " + language has been set to ${{ inputs.language }}, adding to scan script."
@@ -367,7 +367,7 @@ runs:
       shell: bash
 
     - id: check-norulesetcompatibility
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.norulesetcompatibility }}" == 'true' ]]; then
           echo " + norulesetcompatibility has been set to ${{ inputs.norulesetcompatibility }}, adding to scan script."
@@ -378,7 +378,7 @@ runs:
       shell: bash
 
     - id: check-no-cache
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.no-cache }}" == 'true' ]]; then
           echo " + no-cache has been set to ${{ inputs.no-cache }}, adding to scan script."
@@ -389,7 +389,7 @@ runs:
       shell: bash
 
     - id: check-reportfile
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.reportfile }}" != 'false' ]]; then
           echo " + reportfile has been set to ${{ inputs.reportfile }}, adding to scan script."
@@ -400,7 +400,7 @@ runs:
       shell: bash
 
     - id: check-shortnames
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.shortnames }}" == 'true' ]]; then
           echo " + shortnames has been set to ${{ inputs.shortnames }}, adding to scan script."
@@ -411,7 +411,7 @@ runs:
       shell: bash
 
     - id: check-showsuppressed
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.showsuppressed }}" == 'true' ]]; then
           echo " + showsuppressed has been set to ${{ inputs.showsuppressed }}, adding to scan script."
@@ -422,7 +422,7 @@ runs:
       shell: bash
 
     - id: check-stress
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.stress }}" == 'true' ]]; then
           echo " + stress has been set to ${{ inputs.stress }}, adding to scan script."
@@ -433,7 +433,7 @@ runs:
       shell: bash
 
     - id: check-uri
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.uri }}" != 'false' ]]; then
           echo " + uri has been set to ${{ inputs.uri }}, adding to scan script."
@@ -444,7 +444,7 @@ runs:
       shell: bash
 
     - id: check-version
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         if [[ "${{ inputs.version }}" != 'false' ]]; then
           echo " + version has been set to ${{ inputs.version }}, adding to scan script."
@@ -455,7 +455,7 @@ runs:
       shell: bash
 
     - run: echo "::endgroup::"
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       shell: bash
 
     - id: setup-java
@@ -466,7 +466,7 @@ runs:
 
     # Run PMD Scan 
     - id: run-pmd-scan
-      if: ${{ $CONTINUE_SCAN == 'true' }}
+      if: ${{ CONTINUE_SCAN == 'true' }}
       run: |
         echo "::group::Run PMD Scan Script"
         chmod +x $HOME/pmd-scan.sh
