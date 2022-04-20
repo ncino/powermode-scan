@@ -210,7 +210,7 @@ runs:
         
         if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
           echo "Running PMD with only changed files because differential scan is set to true."
-          curl -s -X GET "${{ inputs.curlCompareURL }}" -H "${{ inputs.curlAuthHeader }}" \
+          curl -sL -X GET "${{ inputs.curlCompareURL }}" -H "${{ inputs.curlAuthHeader }}" \
           | jq -r '[.files[] | select( (.status != "removed") ) | .filename] | join(",")' \
           > unprocessed-file.csv
           echo "###### unprocessed-file.csv #######"
