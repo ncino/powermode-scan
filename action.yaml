@@ -1,181 +1,195 @@
 ################
 ### Branding ###
 ################
-name: 'powermode-scan'
-author: 'Jason True'
-description: 'Run static code pattern analysis scan for Apex security using PMD.'
+name: "powermode-scan"
+author: "Jason True"
+description: "Run static code pattern analysis scan for Apex security using PMD."
 branding:
-  icon: 'user-check'  
-  color: 'green'
+  icon: "user-check"
+  color: "green"
 
 ################
 ###  Inputs  ###
 ################
 inputs:
-  auxclasspath: 
-    description:    'Specifies the classpath for libraries used by the source code. This is used to resolve types in 
-                    source files. The platform specific path delimiter (":" on Linux, ";" on Windows) is used to 
-                    separate the entries. Alternatively, a single file: URL to a text file containing path elements on 
-                    consecutive lines can be specified.'
+  auxclasspath:
+    description:
+      'Specifies the classpath for libraries used by the source code. This is used to resolve types in
+      source files. The platform specific path delimiter (":" on Linux, ";" on Windows) is used to
+      separate the entries. Alternatively, a single file: URL to a text file containing path elements on
+      consecutive lines can be specified.'
     required: false
-    default: 'false'
-  
+    default: "false"
+
   benchmark:
-    description:    'Enables benchmark mode, which outputs a benchmark report upon completion. 
-                    The report is sent to standard error.'
+    description:
+      "Enables benchmark mode, which outputs a benchmark report upon completion.
+      The report is sent to standard error."
     required: false
-    default: 'false'
-  
-  cache: 
-    description:    'Specify the location of the cache file for incremental analysis. This should be the full path to 
-                    the file, including the desired file name (not just the parent directory). If the file does not 
-                    exist, it will be created on the first run. The file will be overwritten on each run with the most 
-                    up-to-date rule violations. This can greatly improve analysis performance and is highly recommended.'
+    default: "false"
+
+  cache:
+    description:
+      "Specify the location of the cache file for incremental analysis. This should be the full path to
+      the file, including the desired file name (not just the parent directory). If the file does not
+      exist, it will be created on the first run. The file will be overwritten on each run with the most
+      up-to-date rule violations. This can greatly improve analysis performance and is highly recommended."
     required: false
-    default: 'false'
-  
-  curlCompareURL: 
-    description:    'URL used in building the list of changed files. Defaults to the name of the repository.'
+    default: "false"
+
+  curlCompareURL:
+    description: "URL used in building the list of changed files. Defaults to the name of the repository."
     required: false
-    default: 'https://api.github.com/repos/${{ github.repository }}/compare/${{ github.base_ref }}...${{ github.event.pull_request.head.sha }}'
+    default: "https://api.github.com/repos/${{ github.repository }}/compare/${{ github.base_ref }}...${{ github.event.pull_request.head.sha }}"
 
   curlAuthHeader:
-    description:    'Auth token used to access the github api with curl command. Used in building the list of differential files.
-                    This must be passed by the local action when building a differential file.'
+    description:
+      "Auth token used to access the github api with curl command. Used in building the list of differential files.
+      This must be passed by the local action when building a differential file."
     required: false
-    default: 'false'
+    default: "false"
 
   debug:
-    description:    'Debug mode. Prints more log output.'
+    description: "Debug mode. Prints more log output."
     required: false
-    default: 'false'
-  
+    default: "false"
+
   differential-scan:
-    description:    'Run the scan on all files or only files changed in the pull request?  If set to true this will 
-                    ignore the scan-root-directory setting and use a generated diff file instead. This is separate from 
-                    PMDs differential scan capability which will speed up scanning but still evaluate the entire dir location.
-                    Setting this value to true will generate a list of files that were changed in the pull request and requires.'
+    description:
+      "Run the scan on all files or only files changed in the pull request?  If set to true this will
+      ignore the scan-root-directory setting and use a generated diff file instead. This is separate from
+      PMDs differential scan capability which will speed up scanning but still evaluate the entire dir location.
+      Setting this value to true will generate a list of files that were changed in the pull request and requires."
     required: false
-    default: 'false'
+    default: "false"
 
   dir:
-    description:    'Required Root directory for the analyzed sources.'
+    description: "Required Root directory for the analyzed sources."
     required: false
-    default: 'false'
-  
+    default: "false"
+
   encoding:
-    description:    'Specifies the character set encoding of the source code files PMD is reading. The valid values are 
-                    the standard character sets of java.nio.charset.Charset.'
+    description:
+      "Specifies the character set encoding of the source code files PMD is reading. The valid values are
+      the standard character sets of java.nio.charset.Charset."
     required: false
-    default: 'UTF-8'
-  
+    default: "UTF-8"
+
   failOnViolation:
-    description:    'Specifies whether PMD exits with non-zero status if violations are found. By default PMD exits 
-                    with status 4 if violations are found. Disable this feature with -failOnViolation false to exit 
-                    with 0 instead and just output the report.	'
+    description:
+      "Specifies whether PMD exits with non-zero status if violations are found. By default PMD exits
+      with status 4 if violations are found. Disable this feature with -failOnViolation false to exit
+      with 0 instead and just output the report.	"
     required: false
-    default: 'true'
-  
+    default: "true"
+
   format:
-    description:    'Output format of the analysis report. Options: sarif, codeclimate, csv, emacs, html, ideaj,
-                    json, summaryhtml, text (default), textcolor, textpad, vbhtml, xml, xslt, yahtml'
+    description:
+      "Output format of the analysis report. Options: sarif, codeclimate, csv, emacs, html, ideaj,
+      json, summaryhtml, text (default), textcolor, textpad, vbhtml, xml, xslt, yahtml"
     required: false
-    default: 'text'
-  
+    default: "text"
+
   filelist:
-    description:    'Path to file containing a comma delimited list of files to analyze. If this is given, then you 
-                    do not need to provide -dir. Do not use in combination with Differential Scan.'
+    description:
+      "Path to file containing a comma delimited list of files to analyze. If this is given, then you
+      do not need to provide -dir. Do not use in combination with Differential Scan."
     required: false
-    default: 'false'
-  
-  ignorelist: 
-    description:    'Path to file containing a comma delimited list of files to ignore. This option can be combined 
-                    with -dir and -filelist. This ignore list takes precedence over any files in the filelist.'
+    default: "false"
+
+  ignorelist:
+    description:
+      "Path to file containing a comma delimited list of files to ignore. This option can be combined
+      with -dir and -filelist. This ignore list takes precedence over any files in the filelist."
     required: false
-    default: 'false'
-  
+    default: "false"
+
   help:
-    description:    'Display help on usage.'
+    description: "Display help on usage."
     required: false
-    default: 'false'
-  
+    default: "false"
+
   language:
-    description:    'Specify the language PMD should use. Used together with -version.'
+    description: "Specify the language PMD should use. Used together with -version."
     required: false
-    default: 'false'
-  
+    default: "false"
+
   minimumpriority:
-    description:    'Rule priority threshold, rules with lower priority than configured here will not be used.' 
+    description: "Rule priority threshold, rules with lower priority than configured here will not be used."
     required: false
-    default: '5'
-  
+    default: "5"
+
   norulesetcompatibility:
-    description:    'Disable automatic fixing of invalid rule references. Without the switch, PMD tries to 
-                    automatically replace rule references that point to moved or renamed rules with the newer 
-                    location if possible. Disabling it is not recommended.'
+    description:
+      "Disable automatic fixing of invalid rule references. Without the switch, PMD tries to
+      automatically replace rule references that point to moved or renamed rules with the newer
+      location if possible. Disabling it is not recommended."
     required: false
-    default: 'false'
-  
+    default: "false"
+
   no-cache:
-    description:    'Explicitly disables incremental analysis. This switch turns off suggestions to use Incremental 
-                    Analysis, and causes the -cache option to be discarded if it is provided.'
+    description:
+      "Explicitly disables incremental analysis. This switch turns off suggestions to use Incremental
+      Analysis, and causes the -cache option to be discarded if it is provided."
     required: false
-    default: 'false'
-  
+    default: "false"
+
   pmd-version:
-    description:    'Defines what version of PMD to download and run.'
+    description: "Defines what version of PMD to download and run."
     required: false
-    default: '6.33.0'
+    default: "6.33.0"
 
   reportfile:
-    description:    'Path to a file in which the report output will be sent. By default the report is printed on 
-                    standard output.'
+    description:
+      "Path to a file in which the report output will be sent. By default the report is printed on
+      standard output."
     required: false
-    default: 'false'
+    default: "false"
 
-  # There seems to be a bug related to using ${{ github.action_path }} in the inputs. When echoing the value during 
+  # There seems to be a bug related to using ${{ github.action_path }} in the inputs. When echoing the value during
   # step execution it prints '/home/runner/work/_actions/ncino/powermode-scan/v1/' but when setting the input default
   # it doesn't print anything. Using the full path to set the default here as a workaround.
   rulesets:
-    description:    'Comma-separated list of ruleset or rule references.  Some examples are available under 
-                    powermode-scan/pmd-rulesets.'
+    description:
+      "Comma-separated list of ruleset or rule references.  Some examples are available under
+      powermode-scan/pmd-rulesets."
     required: false
-    default: '/home/runner/work/_actions/ncino/powermode-scan/v1/pmd-rulesets/apexSecurityRuleSet.xml' 
-  
+    default: "/home/runner/work/_actions/ncino/powermode-scan/v1/pmd-rulesets/apexSecurityRuleSet.xml"
+
   shortnames:
-    description:    'Prints shortened filenames in the report.'
+    description: "Prints shortened filenames in the report."
     required: false
-    default: 'false'
-  
+    default: "false"
+
   showsuppressed:
-    description:    'Causes the suppressed rule violations to be added to the report.'
+    description: "Causes the suppressed rule violations to be added to the report."
     required: false
-    default: 'false'
-  
+    default: "false"
+
   stress:
-    description:    'Performs a stress test.'
+    description: "Performs a stress test."
     required: false
-    default: 'false'
-  
+    default: "false"
+
   suppressmarker:
-    description:    'Specifies the comment token that marks lines which PMD should ignore.'
+    description: "Specifies the comment token that marks lines which PMD should ignore."
     required: false
-    default: 'NOPMD'
-  
+    default: "NOPMD"
+
   threads:
-    description:    'Sets the number of threads used by PMD. Set threads to 0 to disable multi-threading processing.'
+    description: "Sets the number of threads used by PMD. Set threads to 0 to disable multi-threading processing."
     required: false
-    default: '1'
-  
+    default: "1"
+
   uri:
-    description:    'Database URI for sources. If this is given, then you do not need to provide -dir'
+    description: "Database URI for sources. If this is given, then you do not need to provide -dir"
     required: false
-    default: 'false'
-  
-  version: 
-    description:    'Specify the version of a language PMD should use. Used together with -language.'
+    default: "false"
+
+  version:
+    description: "Specify the version of a language PMD should use. Used together with -language."
     required: false
-    default: 'false'
+    default: "false"
 
 #########################
 ###  Composite Steps  ###
@@ -183,8 +197,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-
-    # Download and Unzip PMD 
+    # Download and Unzip PMD
     # Access PMD's run script with this location: pmd-bin-${{ inputs.pmd-version }}/bin/run.sh
     - id: install-pmd
       run: |
@@ -203,16 +216,15 @@ runs:
     # Finally uses sed to remove trailing commas from the diff-file.csv
     - id: generate-differential-filelist
       run: |
-        echo "::group::Generate List of Changed Files"      
+        echo "::group::Generate List of Changed Files"
         echo "github.event.pull_request.head.sha: ${{ github.event.pull_request.head.sha }}"
         echo "github.base_ref: ${{ github.base_ref }}"
         echo "curlCompareURL: ${{ inputs.curlCompareURL }}"
-        
-        if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then 
+
+        if [[ "${{ inputs.differential-scan }}" == 'true' ]]; then
           echo "Running PMD with only changed files because differential scan is set to true."
-          curl -sL -X GET "${{ inputs.curlCompareURL }}" -H "${{ inputs.curlAuthHeader }}" \
-          | jq -r '[.files[] | select( (.status != "removed") ) | .filename] | join(",")' \
-          > unprocessed-file.csv
+          curl -sL -X GET "${{ inputs.curlCompareURL }}" -H "${{ inputs.curlAuthHeader }}" -o curlResponse.json
+          cat curlResponse.json | jq -r '[.files[] | select( (.status != "removed") ) | .filename] | join(",")' > unprocessed-file.csv
           echo "###### unprocessed-file.csv #######"
           cat unprocessed-file.csv
           echo "############################"
@@ -245,7 +257,7 @@ runs:
         echo "::endgroup::"
       shell: bash
 
-    # Set the default scan command to run.  Optional components that cannot be defaulted are added below using 
+    # Set the default scan command to run.  Optional components that cannot be defaulted are added below using
     # conditional tests.  If the conditional passes the argument is added to the scan script file.
     - id: initialize-scan
       if: ${{ steps.generate-differential-filelist.outputs.continue-scan == 'true' }}
@@ -261,7 +273,7 @@ runs:
             -suppressmarker ${{ inputs.suppressmarker }} \
             -threads ${{ inputs.threads }} " > $HOME/pmd-scan.sh
         echo "pmd-scan initialized with these base values:"
-        cat $HOME/pmd-scan.sh 
+        cat $HOME/pmd-scan.sh
       shell: bash
 
     - run: echo "Checking inputs that have been set to include in scan command script."
@@ -462,10 +474,10 @@ runs:
     - id: setup-java
       uses: actions/setup-java@v2
       with:
-        distribution: 'adopt'
-        java-version: '11'
+        distribution: "adopt"
+        java-version: "11"
 
-    # Run PMD Scan 
+    # Run PMD Scan
     - id: run-pmd-scan
       if: ${{ steps.generate-differential-filelist.outputs.continue-scan == 'true' }}
       run: |
@@ -474,7 +486,7 @@ runs:
         sh $HOME/pmd-scan.sh || EXIT_CODE=$?
         if [[ $EXIT_CODE -ne 0 ]]; then
           echo "Exit Code: $EXIT_CODE"
-          touch /tmp/build_failed.txt; 
-        fi;
+          touch /tmp/build_failed.txt
+        fi
         echo "::endgroup::"
       shell: bash
