@@ -233,7 +233,7 @@ runs:
           IFS=, read -a Array <<<"$unprocessed_list"
           for i in "${Array[@]}"
           do
-            if [[ $i == *".json"* ]] || [[ $i == *"yml"* ]] || [[ $i == *"md"* ]] || [[ $i == *"prettier"* ]] || [[ $i == *".png"* ]] || [[ $i == *"ignore"* ]]; then
+            if [[ $i == *".json"* ]] || [[ $i == *"yml"* ]] || [[ $i == *"md"* ]] || [[ $i == *"prettier"* ]] || [[ $i == *".png"* ]] || [[ $i == *"ignore"* ]] || [[ $i == *"aws-modules"* ]]; then
                 echo "excluding ${i} from diff-file list"
             else
                 processed_list="${i}",${processed_list}
